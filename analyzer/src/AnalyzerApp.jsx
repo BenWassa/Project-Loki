@@ -35,7 +35,7 @@ const GlassPane = ({ children, className = "", intensity = 1 }) => {
   );
 };
 
-const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false }) => {
+const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false, ariaLabel }) => {
   const variants = {
     indigo: "from-indigo-600 to-blue-700 hover:brightness-110 shadow-indigo-500/20 text-white",
     amber: "from-amber-500 to-orange-600 hover:brightness-110 shadow-amber-500/20 text-white",
@@ -47,6 +47,7 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = "", disa
     <button 
       onClick={disabled ? null : onClick}
       disabled={disabled}
+      aria-label={ariaLabel}
       className={`
         relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
         bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
@@ -469,7 +470,12 @@ const Dashboard = ({ onNewSession }) => {
   };
 
   const exportData = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessions, null, 2));
+    const exportData = {
+      version: "1.0",
+      exported_at: new Date().toISOString(),
+      sessions: sessions
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", "loki_analyzer_data.json");
