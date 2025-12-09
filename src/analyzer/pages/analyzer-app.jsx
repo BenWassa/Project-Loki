@@ -617,7 +617,7 @@ export default function AnalyzerApp() {
                <History className="w-5 h-5" />
              </button>
              <div className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Loki OS // Analyzer v1.0</div>
-             <div className="w-5" /> {/* Spacer */}
+             <a href="/" className="text-slate-400 hover:text-white transition-colors text-xs">Home</a>
           </header>
         )}
 
