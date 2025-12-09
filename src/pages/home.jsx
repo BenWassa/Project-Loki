@@ -130,12 +130,12 @@ const Home = () => {
         <motion.div 
           animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-900/20 blur-[120px]" 
+          className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-900/10 blur-[120px]" 
         />
         <motion.div 
           animate={{ x: [0, -100, 0], y: [0, 100, 0], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear", delay: 2 }}
-          className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-indigo-950/30 blur-[100px]" 
+          className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-indigo-950/15 blur-[100px]" 
         />
       </div>
 
@@ -164,7 +164,7 @@ const Home = () => {
 
           <div className="mb-8">
             <span className="text-[10px] font-mono text-indigo-400 tracking-widest uppercase block mb-2">
-              <DecryptedText text="// 01. DIAGNOSTIC ENTRY" />
+              <DecryptedText text="// SYS.DIAGNOSTIC: ENTRY" />
             </span>
           </div>
 
@@ -202,7 +202,7 @@ const Home = () => {
 
       {/* --- Section 2: Noise & Signal (Spotlight Cards) --- */}
       <section className="min-h-screen w-full flex flex-col justify-center items-center px-4 py-20 z-10 relative">
-        <div className="w-full max-w-4xl grid grid-cols-1 gap-6 mb-20">
+          <div className="w-full max-w-4xl grid grid-cols-1 gap-8 mb-20">
           
           <SpotlightCard className="p-8 md:p-12 rounded-xl backdrop-blur-md">
             <span className="text-[10px] font-mono text-white/30 tracking-widest uppercase block mb-4">
@@ -213,7 +213,7 @@ const Home = () => {
             </p>
           </SpotlightCard>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <SpotlightCard className="p-8 md:p-10 rounded-xl backdrop-blur-md">
               <span className="text-[10px] font-mono text-white/30 tracking-widest uppercase block mb-4">
                 // NEURO.STATUS: EXPLOITED
@@ -225,7 +225,7 @@ const Home = () => {
 
             <SpotlightCard className="p-8 md:p-10 rounded-xl backdrop-blur-md border-l-4 border-l-indigo-500">
               <span className="text-[10px] font-mono text-indigo-400 tracking-widest uppercase block mb-4">
-                // CONCLUSION
+                // SYS.CONCLUSION: OBSERVATION
               </span>
               <p className="text-lg text-white font-medium leading-relaxed">
                 None of this is failure. It is the predictable fatigue of a human system running in conditions it was never built for.
@@ -270,7 +270,7 @@ const Home = () => {
           
           {/* Animated SVG Diagram */}
           <div className="order-2 lg:order-1 flex justify-center relative">
-            <div className="relative w-full max-w-md aspect-square bg-white/5 border border-white/5 rounded-sm p-8 backdrop-blur-sm">
+            <div className="relative w-full max-w-md aspect-square bg-white/5 border border-white/10 rounded-sm p-8 backdrop-blur-sm">
                <svg viewBox="0 0 200 200" fill="none" className="w-full h-full opacity-90">
                   {/* Central Beam */}
                   <motion.line 
@@ -315,17 +315,21 @@ const Home = () => {
                  FIG 1.2: STRUCTURAL INTEGRITY
                </div>
             </div>
+            <div className="mt-4 text-center">
+              <p className="text-[10px] font-mono text-white/30">Every system has load, fulcrum, and base. Change the load and the experience changes.</p>
+            </div>
+            </div>
           </div>
 
           <div className="order-1 lg:order-2">
              <div className="mb-6">
                 <span className="text-[10px] font-mono text-indigo-400 tracking-widest uppercase block mb-2">
-                  <DecryptedText text="// 02. THE REFRAME" />
+                  <DecryptedText text="// SYS.REFRAME: GEOMETRY" />
                 </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-light text-white mb-6">Systems Beat Willpower.</h2>
             <div className="space-y-6 text-slate-300 font-light leading-relaxed border-l border-white/10 pl-6">
-                <p>We do not believe in grit. We believe in geometry.</p>
+                <p>We don’t push harder. We redesign the load.</p>
                 <p>
                     When a bridge collapses, we do not blame the steel for being lazy; we redesign the load. Your life is a structure. If it is buckling under the weight of modern noise, the solution is not to push harder.
                 </p>
@@ -340,7 +344,7 @@ const Home = () => {
         <div className="max-w-5xl mx-auto">
             <div className="mb-12 text-center">
                 <span className="text-[10px] font-mono text-indigo-400 tracking-widest uppercase block mb-2">
-                  // 03. METHODOLOGY
+                  // TOOL.METHODOLOGY: LENS
                 </span>
                 <h2 className="text-2xl font-light text-white">A Tool is a Lens.</h2>
             </div>
@@ -362,6 +366,9 @@ const Home = () => {
                   </SpotlightCard>
                 ))}
             </div>
+            <div className="mt-6 text-center">
+              <p className="text-sm font-mono text-slate-400">Tools modify the system, not the person.</p>
+            </div>
         </div>
       </section>
 
@@ -381,7 +388,7 @@ const Home = () => {
             </h2>
 
             <MagneticButton 
-              className="group relative px-10 py-4 bg-transparent border border-white/20 text-white font-mono text-sm uppercase tracking-[0.2em] overflow-hidden transition-colors hover:border-white/60"
+              className="group relative px-10 py-4 bg-transparent border border-white/10 text-white font-mono text-sm uppercase tracking-[0.2em] overflow-hidden transition-colors hover:border-white/60"
               onClick={() => navigate('/analyzer')}
             >
                 <span className="relative z-10">[ Begin Diagnosis ]</span>
@@ -389,7 +396,7 @@ const Home = () => {
             </MagneticButton>
             
             <p className="mt-8 text-[10px] font-mono text-white/30 uppercase tracking-widest">
-               est. time: 120 seconds
+              Takes about two minutes.
             </p>
         </div>
       </section>
