@@ -16,7 +16,7 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import { TRAPS, CONTEXTS } from '../data/trap-constants.js';
+import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 
 // --- COMPONENTS ---
