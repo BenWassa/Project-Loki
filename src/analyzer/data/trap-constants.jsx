@@ -61,6 +61,30 @@ export const TRAPS = {
       { type: 'timer', time: 180, label: 'Timebox', prompt: 'Work for just 3 minutes. The only goal is to touch the task.' }
     ]
   },
+  impatience: {
+    id: 'impatience',
+    name: 'Impatience',
+    color: 'from-amber-500 to-yellow-600',
+    icon: <ArrowRight className="w-6 h-6 text-amber-200" />,
+    description: "The rush to finish before the system or process is ready.",
+    reframe: "Speed is a technique, not a virtue. Incremental progress beats hurried chaos.",
+    symptoms: [
+      "I skip steps to get it done faster.",
+      "I get annoyed with setup or documentation.",
+      "I cut corners to ship something quickly."
+    ],
+    diagnostic: [
+      "Are you trying to move faster than the process supports?",
+      "Are you skipping verification or safety steps?",
+      "Is the goal to 'ship' rather than to fix the core problem?"
+    ],
+    playbook: [
+      { type: 'write', time: 120, label: 'Speed Check', prompt: 'What will I miss if I rush? List risks.' },
+      { type: 'write', time: 180, label: 'Small Batch', prompt: 'Break the work into one verifiable change.' },
+      { type: 'timer', time: 300, label: 'Low-Hassle Step', prompt: 'Do a single small step with no side-effects.' },
+      { type: 'log', time: 60, label: 'Result Check', prompt: 'What happened after the small step? Did it change anything?' },
+    ]
+  },
   boredom: {
     id: 'boredom',
     name: 'Boredom',
@@ -85,6 +109,31 @@ export const TRAPS = {
         ]
       }
       // Branches are handled dynamically in the component below
+    ]
+  },
+  },
+  fog: {
+    id: 'fog',
+    name: 'Fog',
+    color: 'from-slate-400 to-slate-600',
+    icon: <CloudFog className="w-6 h-6 text-slate-300" />,
+    description: "You don't have a clear definition of the goal; things feel opaque.",
+    reframe: "Clarity beats momentum. Spend time mapping the desired state before acting.",
+    symptoms: [
+      "I don't know which component matters.",
+      "Tasks lack clear definition or acceptance criteria.",
+      "I keep changing direction without progress."
+    ],
+    diagnostic: [
+      "Can you describe the 'done' state in one sentence?",
+      "Are stakeholders aligned on what success looks like?",
+      "Do you have a visible metric for progress?"
+    ],
+    playbook: [
+      { type: 'write', time: 180, label: 'Done State', prompt: 'Write a one-sentence definition of Done.' },
+      { type: 'write', time: 180, label: 'Acceptance Criteria', prompt: 'List the smallest testable criteria for Done.' },
+      { type: 'action', time: 300, label: 'One Measure', prompt: 'Pick a single metric or condition that shows progress.' },
+      { type: 'log', time: 60, label: 'Share & Confirm', prompt: 'Share the plan with a peer and capture feedback.' }
     ]
   },
   intermittent: {

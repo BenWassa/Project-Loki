@@ -17,14 +17,30 @@ At the heart of Project Loki is the **Gumption Trap Analyzer**—an interactive 
 
 ### Key Traps Covered
 
+The current Analyzer implements the following traps (as of this codebase):
+
 - **Egotism** - Value rigidity and rejecting reality
-- **Impatience** - The rush to see results prematurely
-- **Laziness** - Physical and intellectual sloth
-- **Fear** - Anxiety that paralyzes progress
-- **Boredom** - The trap of insufficient challenge
-- **Fog** - Misunderstanding what you're actually trying to do
+- **Anxiety** - Paralysis by fear of low quality or outcomes
+- **Boredom** - The task has lost its Quality signal and is under-challenging
+- **Intermittent Failure** - Ghosts in the machine; flickering or inconsistent failures
+- **Reassembly Failure** - Things are taken apart and the whole can't be put back together
+ - **Impatience** - Pushing to finish before the system is ready
+ - **Fog** - Unclear goals or lack of definition leading to poor direction
 
 Each trap includes diagnostic questions, practical reframes, and a path forward.
+
+Note: There is an `experiments/analyzer_mvp` folder with older prototype material. The active implementation is under `src/analyzer`. To avoid drift, update `src/analyzer` and move experimental artifacts to an archive subfolder when you're ready to retire them.
+
+Repository housekeeping (recommended):
+
+- Move any remaining prototype files from `experiments/analyzer_mvp` to `experiments/archive/` and add a short README that documents the prototype state and purpose.
+-- Keep the `src/analyzer` directory as the single source of truth for the Analyzer app. Avoid editing files under `experiments/` except for archival or migration tasks.
+-- If you plan to add any previously‑planned traps (Laziness or other new traps), add them to `src/analyzer/data/trap-constants.jsx` and unit tests under `tests/analyzer` to validate behavior.
+
+For migration from local storage to a cloud backend (future work):
+
+- Export format: sessions are stored as `loki_sessions_v1` in localStorage and exported via the Dashboard's Export JSON; maintain backwards compatibility by supporting import/imported versions.
+- Document a migration path for any V3 schema (Postgres/Supabase) so old sessions can be mapped to new fields. Consider a staged import where users approve mapping.
 
 ## 🚀 Quick Start
 
@@ -47,6 +63,16 @@ npm run dev
 ```
 
 The app will be available at `http://localhost:5173`
+
+### Testing
+
+Run unit tests with Vitest:
+
+```bash
+npm run test
+```
+
+The tests include basic checks for trap definitions, playbook branching logic, and local storage utilities.
 
 ### Build for Production
 

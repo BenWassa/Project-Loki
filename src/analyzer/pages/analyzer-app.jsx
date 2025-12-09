@@ -43,11 +43,13 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = "", disa
     danger: "from-red-900/50 to-red-800/50 border border-red-500/30 text-red-200 hover:bg-red-900/70"
   };
 
+  const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
+
   return (
     <button 
       onClick={disabled ? null : onClick}
       disabled={disabled}
-      aria-label={ariaLabel}
+      aria-label={computedLabel}
       className={`
         relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
         bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
@@ -85,7 +87,7 @@ const StartScreen = ({ onStart }) => (
         Identify the Trap. Apply the Lever.<br/>Restore Quality.
       </p>
     </div>
-    <GemButton onClick={onStart} variant="amber" className="w-48 text-base">
+    <GemButton onClick={onStart} variant="amber" className="w-48 text-base" ariaLabel="Begin diagnosis">
       <Play className="w-4 h-4" /> Begin Diagnosis
     </GemButton>
   </div>
@@ -152,7 +154,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
     </GlassPane>
 
     <div className="flex justify-end">
-      <GemButton onClick={onNext} disabled={!data.taskName || !data.context}>
+      <GemButton onClick={onNext} disabled={!data.taskName || !data.context} ariaLabel="Analyze signal">
         Analyze Signal <ArrowRight className="w-4 h-4" />
       </GemButton>
     </div>
@@ -235,7 +237,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           Wrong symptoms
         </button>
         {isConfirmed ? (
-           <GemButton onClick={onConfirm} variant="amber">
+           <GemButton onClick={onConfirm} variant="amber" ariaLabel="Confirm diagnosis">
              Confirm Diagnosis <CheckCircle2 className="w-4 h-4" />
            </GemButton>
         ) : (
@@ -275,7 +277,7 @@ const DiagnosisReveal = ({ trapId, onNext }) => {
         </div>
       </GlassPane>
 
-      <GemButton onClick={onNext} variant="indigo" className="w-full max-w-xs">
+      <GemButton onClick={onNext} variant="indigo" className="w-full max-w-xs" ariaLabel="Open intervention deck">
         Open Intervention Deck
       </GemButton>
     </div>
@@ -355,7 +357,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
             {currentAction.type === 'branch' ? (
               <div className="grid grid-cols-1 gap-4">
                 {currentAction.options.map(opt => (
-                  <GemButton key={opt.label} onClick={() => handleBranch(opt.branch)} variant="indigo">
+                  <GemButton key={opt.label} onClick={() => handleBranch(opt.branch)} variant="indigo" ariaLabel={`Branch: ${opt.label}`}>
                     {opt.label}
                   </GemButton>
                 ))}
@@ -373,7 +375,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
                    {timeLeft !== null ? formatTime(timeLeft) : formatTime(currentAction.time)}
                  </div>
                  {timeLeft === null ? (
-                   <GemButton onClick={startTimer} variant="amber" className="w-full">
+                   <GemButton onClick={startTimer} variant="amber" className="w-full" ariaLabel="Start a timed exercise">
                      Start Timer
                    </GemButton>
                  ) : (
@@ -388,7 +390,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
 
         {currentAction.type !== 'branch' && (
           <div className="pt-6 border-t border-white/10 flex justify-end">
-            <GemButton onClick={nextStep} variant="ghost" disabled={currentAction.type === 'timer' && timeLeft > 0}>
+            <GemButton onClick={nextStep} variant="ghost" disabled={currentAction.type === 'timer' && timeLeft > 0} ariaLabel={step === playbook.length - 1 ? 'Finish session' : 'Next step'}>
               {step === playbook.length - 1 ? "Finish Session" : "Next Step"} <ChevronRight className="w-4 h-4" />
             </GemButton>
           </div>
@@ -445,7 +447,7 @@ const Summary = ({ data, onSave }) => {
         </div>
       </GlassPane>
 
-      <GemButton onClick={() => onSave({ result: outcome, note })} variant="amber" className="w-full">
+      <GemButton onClick={() => onSave({ result: outcome, note })} variant="amber" className="w-full" ariaLabel="Save session to log">
         Save to Log
       </GemButton>
     </div>
@@ -494,7 +496,7 @@ const Dashboard = ({ onNewSession }) => {
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-serif text-slate-200">Weekly Patterns</h1>
-        <GemButton onClick={onNewSession} variant="indigo" className="py-2 px-4 text-xs">
+        <GemButton onClick={onNewSession} variant="indigo" className="py-2 px-4 text-xs" ariaLabel="Start a new scan">
           New Scan
         </GemButton>
       </div>

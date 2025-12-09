@@ -16,8 +16,9 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import { TRAPS, CONTEXTS } from '../data/trap_constants.js';
-import { BOREDOM_BRANCHES } from '../logic/playbook_branching.js';
+import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
+import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
+import { loadSessions, saveSession as storageSaveSession, clearSessions } from '../utils/storage.js';
 
 // --- COMPONENTS ---
 
@@ -43,11 +44,13 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = "", disa
     danger: "from-red-900/50 to-red-800/50 border border-red-500/30 text-red-200 hover:bg-red-900/70"
   };
 
+  const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
+
   return (
     <button 
       onClick={disabled ? null : onClick}
       disabled={disabled}
-      aria-label={ariaLabel}
+      aria-label={computedLabel}
       className={`
         relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
         bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
@@ -85,7 +88,7 @@ const StartScreen = ({ onStart }) => (
         Identify the Trap. Apply the Lever.<br/>Restore Quality.
       </p>
     </div>
-    <GemButton onClick={onStart} variant="amber" className="w-48 text-base">
+    <GemButton onClick={onStart} variant="amber" className="w-48 text-base" ariaLabel="Begin diagnosis">
       <Play className="w-4 h-4" /> Begin Diagnosis
     </GemButton>
   </div>
@@ -118,6 +121,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
             <button
               key={ctx}
               onClick={() => onUpdate('context', ctx)}
+              aria-label={`Select context ${ctx}`}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                 data.context === ctx 
                   ? 'bg-indigo-500/20 border-indigo-500 text-indigo-200' 
@@ -141,6 +145,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
           max="100" 
           value={data.friction || 50}
           onChange={(e) => onUpdate('friction', e.target.value)}
+          aria-label="Friction level"
           className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
         />
         <div className="flex justify-between text-[10px] text-slate-500 uppercase">
@@ -152,7 +157,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
     </GlassPane>
 
     <div className="flex justify-end">
-      <GemButton onClick={onNext} disabled={!data.taskName || !data.context}>
+      <GemButton onClick={onNext} disabled={!data.taskName || !data.context} ariaLabel="Analyze signal">
         Analyze Signal <ArrowRight className="w-4 h-4" />
       </GemButton>
     </div>
@@ -211,6 +216,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
             <div className="flex gap-2 shrink-0">
               <button 
                 onClick={() => setAnswers({...answers, [idx]: true})}
+                aria-label={`Answer yes to question ${idx+1}`}
                 className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
                   answers[idx] === true 
                     ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
@@ -219,6 +225,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
               >Y</button>
               <button 
                 onClick={() => setAnswers({...answers, [idx]: false})}
+                aria-label={`Answer no to question ${idx+1}`}
                 className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
                   answers[idx] === false 
                     ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
@@ -235,7 +242,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           Wrong symptoms
         </button>
         {isConfirmed ? (
-           <GemButton onClick={onConfirm} variant="amber">
+           <GemButton onClick={onConfirm} variant="amber" ariaLabel="Confirm diagnosis">
              Confirm Diagnosis <CheckCircle2 className="w-4 h-4" />
            </GemButton>
         ) : (
@@ -275,7 +282,7 @@ const DiagnosisReveal = ({ trapId, onNext }) => {
         </div>
       </GlassPane>
 
-      <GemButton onClick={onNext} variant="indigo" className="w-full max-w-xs">
+      <GemButton onClick={onNext} variant="indigo" className="w-full max-w-xs" ariaLabel="Open intervention deck">
         Open Intervention Deck
       </GemButton>
     </div>
@@ -355,7 +362,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
             {currentAction.type === 'branch' ? (
               <div className="grid grid-cols-1 gap-4">
                 {currentAction.options.map(opt => (
-                  <GemButton key={opt.label} onClick={() => handleBranch(opt.branch)} variant="indigo">
+                  <GemButton key={opt.label} onClick={() => handleBranch(opt.branch)} variant="indigo" ariaLabel={`Branch: ${opt.label}`}>
                     {opt.label}
                   </GemButton>
                 ))}
@@ -373,7 +380,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
                    {timeLeft !== null ? formatTime(timeLeft) : formatTime(currentAction.time)}
                  </div>
                  {timeLeft === null ? (
-                   <GemButton onClick={startTimer} variant="amber" className="w-full">
+                   <GemButton onClick={startTimer} variant="amber" className="w-full" ariaLabel="Start a timed exercise">
                      Start Timer
                    </GemButton>
                  ) : (
@@ -388,7 +395,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
 
         {currentAction.type !== 'branch' && (
           <div className="pt-6 border-t border-white/10 flex justify-end">
-            <GemButton onClick={nextStep} variant="ghost" disabled={currentAction.type === 'timer' && timeLeft > 0}>
+            <GemButton onClick={nextStep} variant="ghost" disabled={currentAction.type === 'timer' && timeLeft > 0} ariaLabel={step === playbook.length - 1 ? 'Finish session' : 'Next step'}>
               {step === playbook.length - 1 ? "Finish Session" : "Next Step"} <ChevronRight className="w-4 h-4" />
             </GemButton>
           </div>
@@ -445,7 +452,7 @@ const Summary = ({ data, onSave }) => {
         </div>
       </GlassPane>
 
-      <GemButton onClick={() => onSave({ result: outcome, note })} variant="amber" className="w-full">
+      <GemButton onClick={() => onSave({ result: outcome, note })} variant="amber" className="w-full" ariaLabel="Save session to log">
         Save to Log
       </GemButton>
     </div>
@@ -457,8 +464,8 @@ const Dashboard = ({ onNewSession }) => {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('loki_sessions_v1');
-    if (saved) setSessions(JSON.parse(saved));
+    const saved = loadSessions();
+    if (saved) setSessions(saved);
   }, []);
 
   const getTrapStats = () => {
@@ -485,7 +492,7 @@ const Dashboard = ({ onNewSession }) => {
   };
 
   const clearData = () => {
-    localStorage.removeItem('loki_sessions_v1');
+    clearSessions();
     setSessions([]);
     setShowClearConfirm(false);
   };
@@ -494,7 +501,7 @@ const Dashboard = ({ onNewSession }) => {
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-serif text-slate-200">Weekly Patterns</h1>
-        <GemButton onClick={onNewSession} variant="indigo" className="py-2 px-4 text-xs">
+        <GemButton onClick={onNewSession} variant="indigo" className="py-2 px-4 text-xs" ariaLabel="Start a new scan">
           New Scan
         </GemButton>
       </div>
@@ -546,18 +553,18 @@ const Dashboard = ({ onNewSession }) => {
       <div className="pt-8 border-t border-white/5">
         <h4 className="text-[10px] uppercase tracking-widest text-slate-600 mb-4">Data Agency (Local Only)</h4>
         <div className="flex gap-4">
-          <button onClick={exportData} className="flex items-center gap-2 text-xs text-slate-400 hover:text-indigo-400 transition-colors">
+          <button onClick={exportData} aria-label="Export sessions JSON" className="flex items-center gap-2 text-xs text-slate-400 hover:text-indigo-400 transition-colors">
             <Download className="w-3 h-3" /> Export JSON
           </button>
           
           {!showClearConfirm ? (
-            <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-2 text-xs text-slate-400 hover:text-rose-400 transition-colors">
+            <button onClick={() => setShowClearConfirm(true)} aria-label="Clear history" className="flex items-center gap-2 text-xs text-slate-400 hover:text-rose-400 transition-colors">
               <Trash2 className="w-3 h-3" /> Clear History
             </button>
           ) : (
             <div className="flex items-center gap-2">
               <span className="text-xs text-rose-400">Are you sure?</span>
-              <button onClick={clearData} className="text-xs font-bold text-rose-400 underline">Yes</button>
+              <button onClick={clearData} aria-label="Confirm clear history" className="text-xs font-bold text-rose-400 underline">Yes</button>
               <button onClick={() => setShowClearConfirm(false)} className="text-xs text-slate-400 hover:text-white"><X className="w-3 h-3"/></button>
             </div>
           )}
@@ -590,9 +597,7 @@ export default function AnalyzerApp() {
       id: Date.now(),
       timestamp: new Date().toISOString()
     };
-    
-    const existing = JSON.parse(localStorage.getItem('loki_sessions_v1') || '[]');
-    localStorage.setItem('loki_sessions_v1', JSON.stringify([...existing, completedSession]));
+    storageSaveSession(completedSession);
     
     setView('dashboard');
     setSessionData({ id: null, taskName: '', context: '', friction: 50, trap: null, result: null, note: '' });
