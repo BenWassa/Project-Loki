@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Play, 
   Activity, 
@@ -23,7 +24,7 @@ import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 
 const GlassPane = ({ children, className = "", intensity = 1 }) => {
   const intensities = {
-    0: "bg-slate-900/40 border-white/5",
+    0: "bg-slate-900/40 border-white/10",
     1: "bg-slate-800/60 backdrop-blur-xl border-white/10 shadow-2xl",
     2: "bg-slate-800/90 backdrop-blur-2xl border-white/20 shadow-xl ring-1 ring-white/10"
   };
@@ -123,7 +124,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                 data.context === ctx 
                   ? 'bg-indigo-500/20 border-indigo-500 text-indigo-200' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
               }`}
             >
               {ctx}
@@ -208,7 +209,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
 
       <GlassPane intensity={1} className="p-6 space-y-6">
         {trap.diagnostic.map((q, idx) => (
-          <div key={idx} className="flex items-center justify-between gap-4 py-2 border-b border-white/5 last:border-0">
+          <div key={idx} className="flex items-center justify-between gap-4 py-2 border-b border-white/10 last:border-0">
             <p className="text-slate-300 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
               <button 
@@ -270,7 +271,7 @@ const DiagnosisReveal = ({ trapId, onNext }) => {
             <p className="text-slate-300 text-sm leading-relaxed mb-6 font-serif">
               {trap.description}
             </p>
-            <div className="bg-white/5 rounded-lg p-4 border border-white/5">
+            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
               <p className="text-indigo-200 italic font-serif text-lg">"{trap.reframe}"</p>
             </div>
           </div>
@@ -370,7 +371,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
                 className="w-full h-32 bg-black/20 rounded-lg border border-white/10 p-4 text-slate-300 focus:border-indigo-500 focus:outline-none resize-none font-mono text-sm"
               />
             ) : currentAction.type === 'timer' || currentAction.type === 'action' ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-black/10 rounded-xl border border-white/5">
+              <div className="flex flex-col items-center justify-center p-8 bg-black/10 rounded-xl border border-white/10">
                  <div className="text-5xl font-mono text-slate-200 mb-6 font-light">
                    {timeLeft !== null ? formatTime(timeLeft) : formatTime(currentAction.time)}
                  </div>
@@ -426,7 +427,7 @@ const Summary = ({ data, onSave }) => {
               className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
                 outcome === o.id 
                   ? 'bg-indigo-500/20 border-indigo-500 text-white' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
               }`}
             >
               {o.icon}
@@ -518,7 +519,7 @@ const Dashboard = ({ onNewSession }) => {
         <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">History</h3>
         <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
           {sessions.length === 0 ? (
-            <div className="text-slate-500 text-center py-12 italic text-sm bg-white/5 rounded-lg border border-white/5">
+            <div className="text-slate-500 text-center py-12 italic text-sm bg-white/5 rounded-lg border border-white/10">
               No data yet.<br/>The system is waiting for your signal.
             </div>
           ) : (
@@ -545,7 +546,7 @@ const Dashboard = ({ onNewSession }) => {
       </div>
 
       {/* Data Agency Footer */}
-      <div className="pt-8 border-t border-white/5">
+      <div className="pt-8 border-t border-white/10">
         <h4 className="text-[10px] uppercase tracking-widest text-slate-600 mb-4">Data Agency (Local Only)</h4>
         <div className="flex gap-4">
           <button onClick={exportData} className="flex items-center gap-2 text-xs text-slate-400 hover:text-indigo-400 transition-colors">
@@ -612,12 +613,12 @@ export default function AnalyzerApp() {
         
         {/* Header (except on start) */}
         {view !== 'start' && (
-          <header className="flex items-center justify-between py-4 mb-4 border-b border-white/5">
-             <button onClick={() => setView('dashboard')} className="text-slate-400 hover:text-white transition-colors">
-               <History className="w-5 h-5" />
-             </button>
-             <div className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Loki OS // Analyzer v1.0</div>
-             <a href="/" className="text-slate-400 hover:text-white transition-colors text-xs">Home</a>
+          <header className="flex items-center justify-between py-4 mb-4 border-b border-white/10">
+               <button onClick={() => setView('dashboard')} className="text-slate-400 hover:text-white transition-colors">
+                 <History className="w-5 h-5" />
+               </button>
+               <div className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Loki OS // Analyzer v1.0</div>
+               <Link to="/" className="text-slate-400 hover:text-white transition-colors text-xs">Home</Link>
           </header>
         )}
 
