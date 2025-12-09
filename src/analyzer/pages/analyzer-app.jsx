@@ -18,6 +18,7 @@ import {
   X
 } from 'lucide-react';
 import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
+import AnalyzerModel from '../operatingModel.js';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 
 // --- COMPONENTS ---
@@ -287,13 +288,18 @@ const DiagnosisReveal = ({ trapId, onNext }) => {
 
 const InterventionDeck = ({ trapId, onComplete }) => {
   const trap = TRAPS[trapId];
-  const [playbook, setPlaybook] = useState(trap.playbook);
+  const [playbook, setPlaybook] = useState(() => (trap ? AnalyzerModel.lever(trapId) : []));
   const [step, setStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [inputVal, setInputVal] = useState('');
   
   const currentAction = playbook[step];
+
+  useEffect(() => {
+    setPlaybook(AnalyzerModel.lever(trapId) || []);
+    setStep(0);
+  }, [trapId]);
   
   useEffect(() => {
     let interval = null;
@@ -583,6 +589,7 @@ export default function AnalyzerApp() {
     result: null,
     note: ''
   });
+  const model = AnalyzerModel;
 
   const updateSession = (key, val) => setSessionData(prev => ({ ...prev, [key]: val }));
 
@@ -630,7 +637,7 @@ export default function AnalyzerApp() {
             <TaskAnchor 
               data={sessionData} 
               onUpdate={updateSession} 
-              onNext={() => setView('symptom')} 
+              onNext={() => { updateSession('signal', model.signal(sessionData)); setView('symptom'); }}
             />
           )}
 
@@ -638,6 +645,8 @@ export default function AnalyzerApp() {
             <SymptomSelect 
               onSelect={(id) => {
                 updateSession('trap', id);
+                const diag = model.diagnosis(sessionData.signal || {}, id);
+                updateSession('diagnosis', diag);
                 setView('calibrate');
               }} 
             />
