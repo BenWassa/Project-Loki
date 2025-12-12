@@ -111,7 +111,6 @@ export const TRAPS = {
       // Branches are handled dynamically in the component below
     ]
   },
-  },
   fog: {
     id: 'fog',
     name: 'Fog',

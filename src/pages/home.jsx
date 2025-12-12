@@ -126,7 +126,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-indigo-500/30 selection:text-white overflow-x-hidden">
       {/* --- Background Nebulas (Framer Motion) --- */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <motion.div 
           animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -137,7 +137,8 @@ const Home = () => {
           transition={{ duration: 25, repeat: Infinity, ease: "linear", delay: 2 }}
           className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-indigo-950/15 blur-[100px]" 
         />
-      </div>
+      </div> */}
+
 
       {/* --- Navbar --- */}
       <nav className="fixed top-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference pointer-events-none">
@@ -243,7 +244,7 @@ const Home = () => {
             initial={{ height: 0 }}
             whileInView={{ height: 120 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
+            transition={{ duration: 1.5 }}
             className="w-px bg-gradient-to-b from-transparent via-indigo-500/40 to-transparent mb-12"
           />
 
@@ -251,11 +252,11 @@ const Home = () => {
             { ["Name the Noise.", "Distill the Signal.", "Reclaim your Agency."].map((text, i) => (
               <motion.h2 
                 key={i}
-                initial={{ opacity: 0, y: 40, filter: "blur(20px)" }}
-                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: i * 0.4, duration: 1, ease: "easeOut" }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.4, duration: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                className="text-4xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-white/40 tracking-tight"
+                className="text-4xl md:text-6xl font-serif font-bold text-white tracking-tight"
               >
                 {text}
               </motion.h2>
@@ -272,26 +273,26 @@ const Home = () => {
           <div className="order-2 lg:order-1 flex justify-center relative">
             <div className="relative w-full max-w-md aspect-square bg-white/5 border border-white/10 rounded-sm p-8 backdrop-blur-sm">
                <svg viewBox="0 0 200 200" fill="none" className="w-full h-full opacity-90">
+                  <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="white" stopOpacity="0.1" />
+                        <stop offset="100%" stopColor="white" stopOpacity="0.8" />
+                    </linearGradient>
+                  </defs>
                   {/* Central Beam */}
-                  <motion.line 
-                    x1="100" y1="20" x2="100" y2="180" 
+                  <motion.path 
+                    d="M100 20 L100 180"
                     stroke="url(#grad1)" strokeWidth="1"
                     initial={{ pathLength: 0 }}
                     whileInView={{ pathLength: 1 }}
-                    transition={{ duration: 2, ease: "easeInOut" }}
+                    transition={{ duration: 2 }}
                   />
-                  <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,0.8)" />
-                    </linearGradient>
-                  </defs>
                   
                   {/* Tension Lines */}
-                  {[{ x1: 40, y1: 140, x2: 100, y2: 100 },{ x1: 160, y1: 140, x2: 100, y2: 100 },{ x1: 40, y1: 60, x2: 100, y2: 100 },{ x1: 160, y1: 60, x2: 100, y2: 100 }].map((line, i) => (
-                    <motion.line 
+                  {[{ x1: 40, y1: 140, x2: 100, y2: 100 }, { x1: 160, y1: 140, x2: 100, y2: 100 }, { x1: 40, y1: 60, x2: 100, y2: 100 }, { x1: 160, y1: 60, x2: 100, y2: 100 }].map((line, i) => (
+                    <motion.path 
                       key={i}
-                      {...line}
+                      d={`M${line.x1} ${line.y1} L${line.x2} ${line.y2}`}
                       stroke="white" strokeWidth="0.5" strokeOpacity="0.3" 
                       initial={{ pathLength: 0 }}
                       whileInView={{ pathLength: 1 }}
@@ -302,7 +303,7 @@ const Home = () => {
                   {/* Base */}
                   <motion.path 
                     d="M40 140 L160 140 L100 180 Z" 
-                    stroke="white" strokeWidth="0.5" strokeOpacity="0.5" fill="rgba(255,255,255,0.02)"
+                    stroke="white" strokeWidth="0.5" strokeOpacity="0.5" fill="white" fillOpacity="0.02"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ delay: 2.5, duration: 1 }}
@@ -317,7 +318,6 @@ const Home = () => {
             </div>
             <div className="mt-4 text-center">
               <p className="text-[10px] font-mono text-white/30">Every system has load, fulcrum, and base. Change the load and the experience changes.</p>
-            </div>
             </div>
           </div>
 
