@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   Play, 
   Activity, 
   AlertCircle, 
   CheckCircle2, 
   ArrowRight, 
-  RotateCcw, 
   History, 
   Brain, 
-  CloudFog, 
-  Layers, 
-  Zap,
   ChevronRight,
   Download,
   Trash2,
@@ -21,13 +18,49 @@ import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 import { loadSessions, saveSession as storageSaveSession, clearSessions } from '../utils/storage.js';
 
+const DecryptedText = ({ text, speed = 30, className = "" }) => {
+  const [displayText, setDisplayText] = useState('');
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        text
+          .split("")
+          .map((letter, index) => {
+            if (index < iteration) return text[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+      if (iteration >= text.length) clearInterval(interval);
+      iteration += 1 / 3;
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return <span className={className}>{displayText}</span>;
+};
+
+const STEPS = [
+  { id: 'start', label: 'Initialize', caption: 'Boot sequence' },
+  { id: 'anchor', label: 'Signal', caption: 'Locate the task' },
+  { id: 'symptom', label: 'Symptom Scan', caption: 'Pattern detection' },
+  { id: 'calibrate', label: 'Calibrate', caption: 'Verify trap' },
+  { id: 'diagnosis', label: 'Diagnosis', caption: 'Reveal archetype' },
+  { id: 'intervention', label: 'Intervention', caption: 'Protocol steps' },
+  { id: 'summary', label: 'Stabilize', caption: 'Anchor learning' },
+  { id: 'dashboard', label: 'Log', caption: 'History + exports' },
+];
+
 // --- COMPONENTS ---
 
 const GlassPane = ({ children, className = "", intensity = 1 }) => {
   const intensities = {
-    0: "bg-slate-900/40 border-white/10",
-    1: "bg-slate-800/60 backdrop-blur-xl border-white/10 shadow-2xl",
-    2: "bg-slate-800/90 backdrop-blur-2xl border-white/20 shadow-xl ring-1 ring-white/10"
+    0: "bg-white/5 border-white/10",
+    1: "bg-white/10 backdrop-blur-md border-white/10 shadow-[0_0_60px_rgba(99,102,241,0.08)]",
+    2: "bg-gradient-to-br from-white/10 via-white/5 to-white/0 backdrop-blur-xl border border-white/20 shadow-2xl ring-1 ring-indigo-500/10"
   };
   
   return (
@@ -39,10 +72,10 @@ const GlassPane = ({ children, className = "", intensity = 1 }) => {
 
 const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false, ariaLabel }) => {
   const variants = {
-    indigo: "from-indigo-600 to-blue-700 hover:brightness-110 shadow-indigo-500/20 text-white",
-    amber: "from-amber-500 to-orange-600 hover:brightness-110 shadow-amber-500/20 text-white",
-    ghost: "bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300",
-    danger: "from-red-900/50 to-red-800/50 border border-red-500/30 text-red-200 hover:bg-red-900/70"
+    indigo: "from-indigo-500 to-blue-700 shadow-indigo-500/30 text-white",
+    amber: "from-amber-500 to-orange-600 shadow-amber-500/30 text-white",
+    ghost: "bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200",
+    danger: "from-red-500/70 to-rose-700 border border-red-500/40 text-red-100"
   };
 
   const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
@@ -53,13 +86,14 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = "", disa
       disabled={disabled}
       aria-label={computedLabel}
       className={`
-        relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
-        bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
+        group relative px-6 py-3 rounded-lg font-mono uppercase tracking-[0.2em] text-[11px] transition-all duration-200
+        bg-gradient-to-br shadow-lg flex items-center justify-center gap-2 overflow-hidden
         ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-0.5 active:translate-y-0'}
         ${variants[variant]} ${className}
       `}
     >
-      {children}
+      <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-white/10 transition-opacity duration-200" />
+      <span className="relative flex items-center justify-center gap-2">{children}</span>
     </button>
   );
 };
@@ -67,39 +101,116 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = "", disa
 const ProgressBar = ({ current, total }) => {
   const percent = Math.min(100, (current / total) * 100);
   return (
-    <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/10">
       <div 
-        className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 transition-all duration-500 ease-out"
+        className="h-full bg-gradient-to-r from-indigo-400 via-blue-500 to-emerald-400 transition-all duration-500 ease-out shadow-[0_0_20px_rgba(79,70,229,0.4)]"
         style={{ width: `${percent}%` }}
       />
     </div>
   );
 };
 
+const StepRail = ({ current }) => {
+  const currentIndex = STEPS.findIndex(step => step.id === current);
+
+  return (
+    <GlassPane intensity={1} className="p-4 lg:p-6 space-y-4">
+      <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-indigo-200/80 flex items-center gap-2">
+        <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse" />
+        <DecryptedText text="// Session Flow" speed={40} />
+      </div>
+      <div className="space-y-3">
+        {STEPS.map((step, idx) => {
+          const state = idx === currentIndex ? 'active' : idx < currentIndex ? 'done' : 'pending';
+          return (
+            <div key={step.id} className="flex items-center gap-3">
+              <div className={`w-9 h-9 rounded-full border flex items-center justify-center text-xs font-mono ${
+                state === 'active' ? 'border-indigo-400 bg-indigo-500/10 text-indigo-100 shadow-[0_0_20px_rgba(99,102,241,0.4)]' :
+                state === 'done' ? 'border-emerald-400/60 bg-emerald-500/10 text-emerald-100' :
+                'border-white/10 text-slate-500'
+              }`}>
+                {idx + 1}
+              </div>
+              <div className="flex-1">
+                <div className={`text-sm font-medium ${state === 'active' ? 'text-white' : state === 'done' ? 'text-emerald-100' : 'text-slate-400'}`}>
+                  {step.label}
+                </div>
+                <div className="text-[11px] text-slate-500">{step.caption}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </GlassPane>
+  );
+};
+
 // --- SCREENS ---
 
 const StartScreen = ({ onStart }) => (
-  <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8 animate-in fade-in duration-700">
-    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-600/20 flex items-center justify-center border border-white/10 mb-4 animate-pulse">
-      <Brain className="w-10 h-10 text-indigo-300" />
+  <div className="space-y-10 animate-in fade-in duration-700">
+    <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-8 items-center">
+      <div className="space-y-6">
+        <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-indigo-300 flex items-center gap-2">
+          <div className="w-2 h-2 bg-indigo-400 rounded-full animate-ping" />
+          <DecryptedText text="// Signal Uplink Ready" />
+        </div>
+        <div className="space-y-3">
+          <h1 className="text-4xl lg:text-5xl font-light text-white leading-tight">The Analyzer</h1>
+          <p className="text-slate-300 text-lg leading-relaxed font-light">
+            Identify the trap. Apply the lever. <br className="hidden md:block" />Restore quality.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <GemButton onClick={onStart} variant="amber" className="px-10 py-3" ariaLabel="Begin diagnosis">
+            <Play className="w-4 h-4" /> Begin Diagnosis
+          </GemButton>
+          <div className="text-xs font-mono text-slate-500 uppercase tracking-[0.2em]">
+            ~2 minutes to calibrate
+          </div>
+        </div>
+      </div>
+
+      <GlassPane intensity={2} className="p-6 relative overflow-hidden border border-white/20">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-cyan-500/10 blur-3xl" />
+        <div className="relative space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-full bg-white/10 border border-white/20">
+              <Brain className="w-6 h-6 text-indigo-200" />
+            </div>
+            <div>
+              <div className="text-xs font-mono uppercase tracking-[0.2em] text-slate-400">Diagnostic Stack</div>
+              <div className="text-lg text-white font-semibold">Signal &amp; Intervention</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: "Pattern Library", value: "8 Traps" },
+              { label: "Protocol Steps", value: "Guided" },
+              { label: "Data Storage", value: "Local Only" },
+              { label: "Export", value: "JSON Ready" },
+            ].map((item) => (
+              <div key={item.label} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">{item.label}</div>
+                <div className="text-sm text-white">{item.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.25em] text-indigo-200/80 font-mono">
+            Designed to mirror the landing aesthetic—glass, glow, and motion.
+          </div>
+        </div>
+      </GlassPane>
     </div>
-    <div className="space-y-3 max-w-md">
-      <h1 className="text-4xl font-serif text-slate-100 tracking-tight">The Analyzer</h1>
-      <p className="text-slate-400 text-lg leading-relaxed">
-        Identify the Trap. Apply the Lever.<br/>Restore Quality.
-      </p>
-    </div>
-    <GemButton onClick={onStart} variant="amber" className="w-48 text-base" ariaLabel="Begin diagnosis">
-      <Play className="w-4 h-4" /> Begin Diagnosis
-    </GemButton>
   </div>
 );
 
 const TaskAnchor = ({ data, onUpdate, onNext }) => (
   <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-    <div className="space-y-1">
-      <h2 className="text-xl font-medium text-slate-200">The Signal</h2>
-      <p className="text-slate-400 text-sm">Where is the friction located?</p>
+    <div className="space-y-2">
+      <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">The Signal</div>
+      <h2 className="text-2xl font-serif text-white">Where is the friction located?</h2>
+      <p className="text-slate-400 text-sm leading-relaxed">Name the work, tag the context, and tell us how sharp the drag feels.</p>
     </div>
 
     <GlassPane intensity={1} className="p-6 space-y-8">
@@ -111,7 +222,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
           value={data.taskName}
           onChange={(e) => onUpdate('taskName', e.target.value)}
           placeholder="e.g. Q3 Report Writing"
-          className="w-full bg-transparent border-b border-slate-600 py-2 text-2xl font-serif text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xl font-serif text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
         />
       </div>
 
@@ -125,8 +236,8 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
               aria-label={`Select context ${ctx}`}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                 data.context === ctx 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-indigo-200' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                  ? 'bg-indigo-500/20 border-indigo-400 text-indigo-100 shadow-[0_0_20px_rgba(99,102,241,0.4)]' 
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
               }`}
             >
               {ctx}
@@ -138,7 +249,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
        <div className="space-y-3">
         <label className="text-xs uppercase tracking-widest text-slate-500 font-semibold flex justify-between">
           <span>Friction Level</span>
-          <span className="text-indigo-300">{data.friction || 50}%</span>
+          <span className="text-indigo-200 font-mono">{data.friction || 50}%</span>
         </label>
         <input 
           type="range" 
@@ -147,7 +258,7 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
           value={data.friction || 50}
           onChange={(e) => onUpdate('friction', e.target.value)}
           aria-label="Friction level"
-          className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+          className="w-full h-2 bg-white/5 rounded-lg appearance-none cursor-pointer accent-indigo-500"
         />
         <div className="flex justify-between text-[10px] text-slate-500 uppercase">
           <span>Annoying</span>
@@ -167,9 +278,10 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
 
 const SymptomSelect = ({ onSelect }) => (
   <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-    <div className="space-y-1">
-      <h2 className="text-xl font-medium text-slate-200">Symptom Scan</h2>
-      <p className="text-slate-400 text-sm">Which statement feels most true right now?</p>
+    <div className="space-y-2">
+      <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Symptom Scan</div>
+      <h2 className="text-2xl font-serif text-white">Which statement feels most true?</h2>
+      <p className="text-slate-400 text-sm">Choose the pattern that best mirrors the drag you’re feeling.</p>
     </div>
 
     <div className="grid gap-3">
@@ -179,13 +291,13 @@ const SymptomSelect = ({ onSelect }) => (
           onClick={() => onSelect(trap.id)}
           className="group text-left"
         >
-          <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
+          <GlassPane intensity={0} className="p-4 hover:border-white/20 hover:shadow-[0_10px_40px_rgba(99,102,241,0.15)] transition-all group-hover:translate-x-1 bg-gradient-to-br from-white/5 to-transparent">
             <div className="flex items-start gap-4">
-              <div className={`p-2 rounded-lg bg-gradient-to-br ${trap.color} bg-opacity-10 opacity-80 shrink-0`}>
+              <div className={`p-2 rounded-lg bg-gradient-to-br ${trap.color} bg-opacity-20 opacity-90 shrink-0 shadow-inner`}>
                 {trap.icon}
               </div>
               <div>
-                <h3 className="text-slate-200 font-medium">{trap.name}</h3>
+                <h3 className="text-slate-100 font-medium">{trap.name}</h3>
                 <p className="text-slate-400 text-sm mt-1 leading-snug">{trap.symptoms[0]}</p>
               </div>
             </div>
@@ -205,15 +317,16 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
 
   return (
     <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-      <div className="space-y-1">
-        <h2 className="text-xl font-medium text-slate-200">Calibration</h2>
-        <p className="text-slate-400 text-sm">Let's verify {trap.name}.</p>
+      <div className="space-y-2">
+        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Calibration</div>
+        <h2 className="text-2xl font-serif text-white">Confirm the pattern</h2>
+        <p className="text-slate-400 text-sm">We need at least two strong signals to lock in {trap.name}.</p>
       </div>
 
       <GlassPane intensity={1} className="p-6 space-y-6">
         {trap.diagnostic.map((q, idx) => (
-          <div key={idx} className="flex items-center justify-between gap-4 py-2 border-b border-white/10 last:border-0">
-            <p className="text-slate-300 text-sm">{q}</p>
+          <div key={idx} className="flex items-center justify-between gap-4 py-3 border-b border-white/10 last:border-0">
+            <p className="text-slate-200 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
               <button 
                 onClick={() => setAnswers({...answers, [idx]: true})}
@@ -221,7 +334,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
                 className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
                   answers[idx] === true 
                     ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
+                    : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'
                 }`}
               >Y</button>
               <button 
@@ -230,7 +343,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
                 className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
                   answers[idx] === false 
                     ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
+                    : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'
                 }`}
               >N</button>
             </div>
@@ -260,19 +373,24 @@ const DiagnosisReveal = ({ trapId, onNext }) => {
   const trap = TRAPS[trapId];
   
   return (
-    <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in-95 duration-700">
-      <div className={`w-40 h-40 rounded-full bg-gradient-to-br ${trap.color} blur-3xl opacity-20 absolute`} />
+    <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in-95 duration-700 relative">
+      <div className={`absolute inset-0 bg-gradient-to-br ${trap.color} opacity-10 blur-3xl`} />
       
-      <GlassPane intensity={2} className="p-8 max-w-sm relative overflow-hidden border-t border-white/20">
+      <GlassPane intensity={2} className="p-8 max-w-lg w-full relative overflow-hidden border-t border-white/20">
         <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${trap.color}`} />
         
-        <div className="flex flex-col items-center gap-6">
-          <div className={`p-4 rounded-2xl bg-gradient-to-br ${trap.color} bg-opacity-20 shadow-lg ring-1 ring-white/20`}>
+        <div className="flex flex-col items-center gap-6 relative z-10">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className={`p-4 rounded-2xl bg-gradient-to-br ${trap.color} bg-opacity-30 shadow-lg ring-1 ring-white/20`}
+          >
             {React.cloneElement(trap.icon, { className: "w-10 h-10 text-white" })}
-          </div>
+          </motion.div>
           
           <div>
-            <h2 className="text-2xl font-serif text-white mb-3">{trap.name} Detected</h2>
+            <h2 className="text-3xl font-serif text-white mb-3">{trap.name} Detected</h2>
             <p className="text-slate-300 text-sm leading-relaxed mb-6 font-serif">
               {trap.description}
             </p>
@@ -341,14 +459,17 @@ const InterventionDeck = ({ trapId, onComplete }) => {
 
   return (
     <div className="space-y-6 h-full flex flex-col">
-      <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wider text-slate-500">
-        <span>Step {step + 1} of {playbook.length}</span>
-        <span>{trap.name} Protocol</span>
+      <div className="flex items-center justify-between text-xs font-medium uppercase tracking-[0.2em] text-indigo-200/80">
+        <span className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" /> Step {step + 1} of {playbook.length}
+        </span>
+        <span className="text-slate-400">{trap.name} Protocol</span>
       </div>
       
       <ProgressBar current={step + 1} total={playbook.length} />
 
-      <GlassPane intensity={2} className="flex-1 p-6 flex flex-col justify-between animate-in slide-in-from-right-8 duration-500">
+      <GlassPane intensity={2} className="flex-1 p-6 flex flex-col justify-between animate-in slide-in-from-right-8 duration-500 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-indigo-500/10 pointer-events-none" />
         <div className="space-y-6">
           <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-indigo-300 mb-2">
             {currentAction.label}
@@ -373,7 +494,7 @@ const InterventionDeck = ({ trapId, onComplete }) => {
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 placeholder="Type your answer here..."
-                className="w-full h-32 bg-black/20 rounded-lg border border-white/10 p-4 text-slate-300 focus:border-indigo-500 focus:outline-none resize-none font-mono text-sm"
+                className="w-full h-32 bg-white/5 rounded-lg border border-white/10 p-4 text-slate-200 focus:border-indigo-500 focus:outline-none resize-none font-mono text-sm placeholder-slate-500"
               />
             ) : currentAction.type === 'timer' || currentAction.type === 'action' ? (
               <div className="flex flex-col items-center justify-center p-8 bg-black/10 rounded-xl border border-white/10">
@@ -419,8 +540,9 @@ const Summary = ({ data, onSave }) => {
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-8 duration-500">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-serif text-white">Stabilize</h2>
-        <p className="text-slate-400">Anchor the win. How did it go?</p>
+        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Stabilize</div>
+        <h2 className="text-2xl font-serif text-white">Anchor the win.</h2>
+        <p className="text-slate-400">How did it go?</p>
       </div>
 
       <GlassPane intensity={1} className="p-6 space-y-6">
@@ -448,7 +570,7 @@ const Summary = ({ data, onSave }) => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="One sentence on what you learned..."
-            className="w-full bg-black/20 border border-white/10 rounded-lg py-3 px-4 text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-slate-200 focus:outline-none focus:border-indigo-500 placeholder-slate-500"
           />
         </div>
       </GlassPane>
@@ -501,13 +623,16 @@ const Dashboard = ({ onNewSession }) => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-serif text-slate-200">Weekly Patterns</h1>
+        <div>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Weekly Patterns</div>
+          <h1 className="text-xl font-serif text-white">Log &amp; Insights</h1>
+        </div>
         <GemButton onClick={onNewSession} variant="indigo" className="py-2 px-4 text-xs" ariaLabel="Start a new scan">
           New Scan
         </GemButton>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <GlassPane intensity={1} className="p-4">
           <div className="text-slate-400 text-[10px] uppercase tracking-wider mb-2">Total Scans</div>
           <div className="text-3xl font-mono text-white">{sessions.length}</div>
@@ -605,80 +730,100 @@ export default function AnalyzerApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-500/30">
-      {/* Background Ambience */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-900/10 rounded-full blur-3xl mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-slate-800/20 rounded-full blur-3xl mix-blend-screen" />
+    <div className="min-h-screen bg-[#050505] text-slate-100 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(99,102,241,0.12), transparent 25%), radial-gradient(circle at 80% 0%, rgba(34,211,238,0.12), transparent 20%), radial-gradient(circle at 40% 70%, rgba(79,70,229,0.08), transparent 30%)' }} />
+        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '140px 140px' }} />
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto min-h-screen flex flex-col p-4">
-        
-        {/* Header (except on start) */}
-        {view !== 'start' && (
-          <header className="flex items-center justify-between py-4 mb-4 border-b border-white/10">
-             <button onClick={() => setView('dashboard')} className="text-slate-400 hover:text-white transition-colors">
-               <History className="w-5 h-5" />
-             </button>
-             <div className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Loki OS // Analyzer v1.0</div>
-             <div className="w-5" /> {/* Spacer */}
-          </header>
-        )}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-10 lg:py-14">
+        <header className="flex items-center justify-between mb-10">
+          <Link to="/" className="text-xs font-mono uppercase tracking-[0.2em] text-white/70 hover:text-white flex items-center gap-2">
+            <span className="text-indigo-400">←</span> Return Home
+          </Link>
+          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-indigo-200/80">
+            <DecryptedText text="Loki OS // Analyzer v1.0" />
+          </div>
+          <div className="flex items-center gap-3 text-[11px] font-mono text-slate-500 uppercase tracking-[0.2em]">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Local Only
+            </div>
+            <div className="hidden sm:block text-slate-700">|</div>
+            <button onClick={() => setView('dashboard')} className="hidden sm:flex items-center gap-1 text-slate-400 hover:text-white transition-colors">
+              <History className="w-4 h-4" /> Log
+            </button>
+          </div>
+        </header>
 
-        {/* View Router */}
-        <main className="flex-1 flex flex-col justify-center pb-8">
-          {view === 'start' && <StartScreen onStart={() => setView('anchor')} />}
-          
-          {view === 'anchor' && (
-            <TaskAnchor 
-              data={sessionData} 
-              onUpdate={updateSession} 
-              onNext={() => setView('symptom')} 
-            />
-          )}
+        <div className="grid lg:grid-cols-[320px,1fr] gap-6 lg:gap-10 items-start">
+          <div className="space-y-4 lg:space-y-6">
+            <StepRail current={view} />
+            <GlassPane intensity={0} className="p-4 lg:p-5 border-dashed border-white/20">
+              <div className="text-xs font-mono uppercase tracking-[0.2em] text-slate-400 mb-2">Guidance</div>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                We matched the analyzer shell to the landing experience: glass, glow, and motion. Sessions never leave your browser; export or clear anytime.
+              </p>
+            </GlassPane>
+          </div>
 
-          {view === 'symptom' && (
-            <SymptomSelect 
-              onSelect={(id) => {
-                updateSession('trap', id);
-                setView('calibrate');
-              }} 
-            />
-          )}
+          <GlassPane intensity={2} className="p-6 lg:p-8 min-h-[70vh] relative overflow-hidden border border-white/20">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-indigo-500/10 pointer-events-none" />
+            <main className="relative">
+              {view === 'start' && <StartScreen onStart={() => setView('anchor')} />}
+              
+              {view === 'anchor' && (
+                <TaskAnchor 
+                  data={sessionData} 
+                  onUpdate={updateSession} 
+                  onNext={() => setView('symptom')} 
+                />
+              )}
 
-          {view === 'calibrate' && (
-            <Calibration 
-              trapId={sessionData.trap} 
-              onConfirm={() => setView('diagnosis')}
-              onReject={() => setView('symptom')}
-            />
-          )}
+              {view === 'symptom' && (
+                <SymptomSelect 
+                  onSelect={(id) => {
+                    updateSession('trap', id);
+                    setView('calibrate');
+                  }} 
+                />
+              )}
 
-          {view === 'diagnosis' && (
-            <DiagnosisReveal 
-              trapId={sessionData.trap}
-              onNext={() => setView('intervention')}
-            />
-          )}
+              {view === 'calibrate' && (
+                <Calibration 
+                  trapId={sessionData.trap} 
+                  onConfirm={() => setView('diagnosis')}
+                  onReject={() => setView('symptom')}
+                />
+              )}
 
-          {view === 'intervention' && (
-            <InterventionDeck 
-              trapId={sessionData.trap}
-              onComplete={() => setView('summary')}
-            />
-          )}
+              {view === 'diagnosis' && (
+                <DiagnosisReveal 
+                  trapId={sessionData.trap}
+                  onNext={() => setView('intervention')}
+                />
+              )}
 
-          {view === 'summary' && (
-            <Summary 
-              data={sessionData}
-              onSave={saveSession}
-            />
-          )}
+              {view === 'intervention' && (
+                <InterventionDeck 
+                  trapId={sessionData.trap}
+                  onComplete={() => setView('summary')}
+                />
+              )}
 
-          {view === 'dashboard' && (
-            <Dashboard onNewSession={() => setView('anchor')} />
-          )}
-        </main>
+              {view === 'summary' && (
+                <Summary 
+                  data={sessionData}
+                  onSave={saveSession}
+                />
+              )}
+
+              {view === 'dashboard' && (
+                <Dashboard onNewSession={() => setView('anchor')} />
+              )}
+            </main>
+          </GlassPane>
+        </div>
       </div>
     </div>
   );
