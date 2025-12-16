@@ -28,24 +28,22 @@ const DecryptedText = ({ text, speed = 30, className = "" }) => {
     let iteration = 0;
     const interval = setInterval(() => {
       setDisplayText(
-        text
-          .split("")
-          .map((letter, index) => {
-            if (index < iteration) return text[index];
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join("")
-      );
-      if (iteration >= text.length) clearInterval(interval);
-      iteration += 1 / 3;
-    }, speed);
-    return () => clearInterval(interval);
-  }, [text, speed]);
-
-  return <span className={className}>{displayText}</span>;
-};
-
-const STEPS = [
+              <GemButton
+                onClick={() => setAnswers({...answers, [idx]: true})}
+                ariaLabel={`Answer yes to question ${idx+1}`}
+                variant={answers[idx] === true ? 'indigo' : 'ghost'}
+                className="w-10 h-10 rounded-full p-0 text-xs"
+              >
+                Y
+              </GemButton>
+              <GemButton
+                onClick={() => setAnswers({...answers, [idx]: false})}
+                ariaLabel={`Answer no to question ${idx+1}`}
+                variant={answers[idx] === false ? 'danger' : 'ghost'}
+                className="w-10 h-10 rounded-full p-0 text-xs"
+              >
+                N
+              </GemButton>
   { id: 'start', label: 'Initialize', caption: 'Boot sequence' },
   { id: 'anchor', label: 'Signal', caption: 'Locate the task' },
   { id: 'symptom', label: 'Symptom Scan', caption: 'Pattern detection' },
@@ -190,18 +188,15 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
         <label className="text-xs uppercase tracking-widest text-slate-500 font-semibold">Context</label>
         <div className="flex flex-wrap gap-2">
           {CONTEXTS.map(ctx => (
-            <button
+            <GemButton
               key={ctx}
               onClick={() => onUpdate('context', ctx)}
-              aria-label={`Select context ${ctx}`}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                data.context === ctx 
-                  ? 'bg-indigo-500/20 border-indigo-400 text-indigo-100 shadow-[0_0_20px_rgba(99,102,241,0.4)]' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
-              }`}
+              ariaLabel={`Select context ${ctx}`}
+              variant={data.context === ctx ? 'indigo' : 'ghost'}
+              className={`px-3 py-1.5 text-xs rounded-full font-medium ${data.context === ctx ? 'shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}`}
             >
               {ctx}
-            </button>
+            </GemButton>
           ))}
         </div>
       </div>
@@ -246,10 +241,12 @@ const SymptomSelect = ({ onSelect }) => (
 
     <div className="grid gap-3">
       {Object.values(TRAPS).map((trap) => (
-        <button
+        <GemButton
           key={trap.id}
           onClick={() => onSelect(trap.id)}
-          className="group text-left"
+          variant="ghost"
+          ariaLabel={`Select trap ${trap.name}`}
+          className="group text-left p-0 w-full"
         >
           <GlassPane intensity={0} className="p-4 hover:border-white/20 hover:shadow-[0_10px_40px_rgba(99,102,241,0.15)] transition-all group-hover:translate-x-1 bg-gradient-to-br from-white/5 to-transparent">
             <div className="flex items-start gap-4">
@@ -262,7 +259,7 @@ const SymptomSelect = ({ onSelect }) => (
               </div>
             </div>
           </GlassPane>
-        </button>
+        </GemButton>
       ))}
     </div>
   </motion.div>
@@ -288,24 +285,22 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           <div key={idx} className="flex items-center justify-between gap-4 py-3 border-b border-white/10 last:border-0">
             <p className="text-slate-200 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: true})}
-                aria-label={`Answer yes to question ${idx+1}`}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === true 
-                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'
-                }`}
-              >Y</button>
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: false})}
-                aria-label={`Answer no to question ${idx+1}`}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === false 
-                    ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'
-                }`}
-              >N</button>
+              <GemButton
+                onClick={() => setAnswers({ ...answers, [idx]: true })}
+                ariaLabel={`Answer yes to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'}`}
+              >
+                Y
+              </GemButton>
+              <GemButton
+                onClick={() => setAnswers({ ...answers, [idx]: false })}
+                ariaLabel={`Answer no to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === false ? 'bg-rose-500/20 border-rose-500 text-rose-400' : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/30'}`}
+              >
+                N
+              </GemButton>
             </div>
           </div>
         ))}
@@ -507,19 +502,17 @@ const Summary = ({ data, onSave }) => {
 
       <GlassPane intensity={1} className="p-6 space-y-6">
         <div className="grid grid-cols-3 gap-2">
-          {outcomes.map(o => (
-            <button
+          {outcomes.map((o) => (
+            <GemButton
               key={o.id}
               onClick={() => setOutcome(o.id)}
-              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-                outcome === o.id 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-white' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-              }`}
+              variant={outcome === o.id ? 'indigo' : 'ghost'}
+              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg text-xs ${outcome === o.id ? '' : 'text-slate-400'}`}
+              ariaLabel={`Select outcome ${o.label}`}
             >
-              {o.icon}
-              <span className="text-xs font-medium">{o.label}</span>
-            </button>
+              <div className="mb-1">{o.icon}</div>
+              <div className="text-xs font-medium">{o.label}</div>
+            </GemButton>
           ))}
         </div>
 

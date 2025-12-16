@@ -80,19 +80,17 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
       <div className="space-y-3">
         <label className="text-xs uppercase tracking-widest text-slate-500 font-semibold">Context</label>
         <div className="flex flex-wrap gap-2">
-          {CONTEXTS.map(ctx => (
-            <button
-              key={ctx}
-              onClick={() => onUpdate('context', ctx)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                data.context === ctx 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-indigo-200' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
-              }`}
-            >
-              {ctx}
-            </button>
-          ))}
+              {CONTEXTS.map(ctx => (
+                <GemButton
+                  key={ctx}
+                  onClick={() => onUpdate('context', ctx)}
+                  ariaLabel={`Select context ${ctx}`}
+                  variant={data.context === ctx ? 'indigo' : 'ghost'}
+                  className={`px-3 py-1.5 text-xs rounded-full font-medium ${data.context === ctx ? 'shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}`}
+                >
+                  {ctx}
+                </GemButton>
+              ))}
         </div>
       </div>
 
@@ -133,13 +131,15 @@ const SymptomSelect = ({ onSelect }) => (
     </div>
 
     <div className="grid gap-3">
-      {Object.values(TRAPS).map((trap) => (
-        <button
-          key={trap.id}
-          onClick={() => onSelect(trap.id)}
-          className="group text-left"
-        >
-          <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
+          {Object.values(TRAPS).map((trap) => (
+            <GemButton
+              key={trap.id}
+              onClick={() => onSelect(trap.id)}
+              variant="ghost"
+              className="group text-left"
+              ariaLabel={`Select trap ${trap.name}`}
+            >
+              <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
             <div className="flex items-start gap-4">
               <div className={`p-2 rounded-lg bg-gradient-to-br ${trap.color} bg-opacity-10 opacity-80 shrink-0`}>
                 {trap.icon}
@@ -150,7 +150,7 @@ const SymptomSelect = ({ onSelect }) => (
               </div>
             </div>
           </GlassPane>
-        </button>
+        </GemButton>
       ))}
     </div>
   </div>
@@ -175,22 +175,22 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           <div key={idx} className="flex items-center justify-between gap-4 py-2 border-b border-white/10 last:border-0">
             <p className="text-slate-300 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: true})}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === true 
-                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
-                }`}
-              >Y</button>
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: false})}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === false 
-                    ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
-                }`}
-              >N</button>
+              <GemButton
+                onClick={() => setAnswers({ ...answers, [idx]: true })}
+                ariaLabel={`Answer yes to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
+              >
+                Y
+              </GemButton>
+              <GemButton
+                onClick={() => setAnswers({ ...answers, [idx]: false })}
+                ariaLabel={`Answer no to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === false ? 'bg-rose-500/20 border-rose-500 text-rose-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
+              >
+                N
+              </GemButton>
             </div>
           </div>
         ))}
@@ -388,19 +388,17 @@ const Summary = ({ data, onSave }) => {
 
       <GlassPane intensity={1} className="p-6 space-y-6">
         <div className="grid grid-cols-3 gap-2">
-          {outcomes.map(o => (
-            <button
+          {outcomes.map((o) => (
+            <GemButton
               key={o.id}
               onClick={() => setOutcome(o.id)}
-              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-                outcome === o.id 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-white' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-              }`}
+              variant={outcome === o.id ? 'indigo' : 'ghost'}
+              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg text-xs ${outcome === o.id ? '' : 'text-slate-400'}`}
+              ariaLabel={`Select outcome ${o.label}`}
             >
-              {o.icon}
-              <span className="text-xs font-medium">{o.label}</span>
-            </button>
+              <div className="mb-1">{o.icon}</div>
+              <div className="text-xs font-medium">{o.label}</div>
+            </GemButton>
           ))}
         </div>
 
