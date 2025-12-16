@@ -93,6 +93,10 @@ This project is configured for **GitHub Pages** deployment:
 
 The app is configured with the correct base path (`/Project-Loki/`) for GitHub Pages routing.
 
+Continuous deployment:
+
+- A GitHub Actions workflow (`.github/workflows/pages.yml`) is included that automatically builds the site and publishes the `docs/` folder to GitHub Pages whenever changes are pushed to the `main` branch.
+
 ## 📁 Project Structure
 
 ```
