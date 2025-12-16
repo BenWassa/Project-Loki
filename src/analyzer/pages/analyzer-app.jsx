@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   Play, 
   Activity, 
@@ -22,47 +23,8 @@ import AnalyzerModel from '../operatingModel.js';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 
 // --- COMPONENTS ---
-
-const GlassPane = ({ children, className = "", intensity = 1 }) => {
-  const intensities = {
-    0: "bg-slate-900/40 border-white/10",
-    1: "bg-slate-800/60 backdrop-blur-xl border-white/10 shadow-2xl",
-    2: "bg-slate-800/90 backdrop-blur-2xl border-white/20 shadow-xl ring-1 ring-white/10"
-  };
-  
-  return (
-    <div className={`rounded-xl border ${intensities[intensity]} ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false, ariaLabel }) => {
-  const variants = {
-    indigo: "from-indigo-600 to-blue-700 hover:brightness-110 shadow-indigo-500/20 text-white",
-    amber: "from-amber-500 to-orange-600 hover:brightness-110 shadow-amber-500/20 text-white",
-    ghost: "bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300",
-    danger: "from-red-900/50 to-red-800/50 border border-red-500/30 text-red-200 hover:bg-red-900/70"
-  };
-
-  const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
-
-  return (
-    <button 
-      onClick={disabled ? null : onClick}
-      disabled={disabled}
-      aria-label={computedLabel}
-      className={`
-        relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
-        bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
-        ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-0.5 active:translate-y-0'}
-        ${variants[variant]} ${className}
-      `}
-    >
-      {children}
-    </button>
-  );
-};
+import GemButton from '../../ui/components/GemButton'
+import GlassPane from '../../ui/components/GlassPane'
 
 const ProgressBar = ({ current, total }) => {
   const percent = Math.min(100, (current / total) * 100);
@@ -79,7 +41,7 @@ const ProgressBar = ({ current, total }) => {
 // --- SCREENS ---
 
 const StartScreen = ({ onStart }) => (
-  <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8 animate-in fade-in duration-700">
+  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8">
     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-600/20 flex items-center justify-center border border-white/10 mb-4 animate-pulse">
       <Brain className="w-10 h-10 text-indigo-300" />
     </div>
@@ -89,10 +51,10 @@ const StartScreen = ({ onStart }) => (
         Identify the Trap. Apply the Lever.<br/>Restore Quality.
       </p>
     </div>
-    <GemButton onClick={onStart} variant="amber" className="w-48 text-base" ariaLabel="Begin diagnosis">
+    <GemButton onClick={onStart} variant="home" className="w-48 text-base" ariaLabel="Begin diagnosis">
       <Play className="w-4 h-4" /> Begin Diagnosis
     </GemButton>
-  </div>
+  </motion.div>
 );
 
 const TaskAnchor = ({ data, onUpdate, onNext }) => (
@@ -118,19 +80,17 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
       <div className="space-y-3">
         <label className="text-xs uppercase tracking-widest text-slate-500 font-semibold">Context</label>
         <div className="flex flex-wrap gap-2">
-          {CONTEXTS.map(ctx => (
-            <button
-              key={ctx}
-              onClick={() => onUpdate('context', ctx)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                data.context === ctx 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-indigo-200' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
-              }`}
-            >
-              {ctx}
-            </button>
-          ))}
+              {CONTEXTS.map(ctx => (
+                <GemButton
+                  key={ctx}
+                  onClick={() => onUpdate('context', ctx)}
+                  ariaLabel={`Select context ${ctx}`}
+                  variant={data.context === ctx ? 'indigo' : 'ghost'}
+                  className={`px-3 py-1.5 text-xs rounded-full font-medium ${data.context === ctx ? 'shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}`}
+                >
+                  {ctx}
+                </GemButton>
+              ))}
         </div>
       </div>
 
@@ -171,13 +131,15 @@ const SymptomSelect = ({ onSelect }) => (
     </div>
 
     <div className="grid gap-3">
-      {Object.values(TRAPS).map((trap) => (
-        <button
-          key={trap.id}
-          onClick={() => onSelect(trap.id)}
-          className="group text-left"
-        >
-          <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
+          {Object.values(TRAPS).map((trap) => (
+            <GemButton
+              key={trap.id}
+              onClick={() => onSelect(trap.id)}
+              variant="ghost"
+              className="group text-left"
+              ariaLabel={`Select trap ${trap.name}`}
+            >
+              <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
             <div className="flex items-start gap-4">
               <div className={`p-2 rounded-lg bg-gradient-to-br ${trap.color} bg-opacity-10 opacity-80 shrink-0`}>
                 {trap.icon}
@@ -188,7 +150,7 @@ const SymptomSelect = ({ onSelect }) => (
               </div>
             </div>
           </GlassPane>
-        </button>
+        </GemButton>
       ))}
     </div>
   </div>
@@ -213,31 +175,31 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           <div key={idx} className="flex items-center justify-between gap-4 py-2 border-b border-white/10 last:border-0">
             <p className="text-slate-300 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: true})}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === true 
-                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
-                }`}
-              >Y</button>
-              <button 
-                onClick={() => setAnswers({...answers, [idx]: false})}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
-                  answers[idx] === false 
-                    ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
-                    : 'bg-white/5 border-white/10 text-slate-500'
-                }`}
-              >N</button>
+              <GemButton
+                onClick={() => setAnswers(prev => ({ ...prev, [idx]: true }))}
+                ariaLabel={`Answer yes to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
+              >
+                Y
+              </GemButton>
+              <GemButton
+                onClick={() => setAnswers(prev => ({ ...prev, [idx]: false }))}
+                ariaLabel={`Answer no to question ${idx + 1}`}
+                variant="ghost"
+                className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === false ? 'bg-rose-500/20 border-rose-500 text-rose-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
+              >
+                N
+              </GemButton>
             </div>
           </div>
         ))}
       </GlassPane>
 
       <div className="flex justify-between items-center">
-        <button onClick={onReject} className="text-slate-500 hover:text-slate-300 text-xs px-4">
+        <GemButton onClick={onReject} variant="ghost" className="px-3 py-2 text-xs" ariaLabel="Wrong symptoms">
           Wrong symptoms
-        </button>
+        </GemButton>
         {isConfirmed ? (
            <GemButton onClick={onConfirm} variant="amber" ariaLabel="Confirm diagnosis">
              Confirm Diagnosis <CheckCircle2 className="w-4 h-4" />
@@ -426,19 +388,17 @@ const Summary = ({ data, onSave }) => {
 
       <GlassPane intensity={1} className="p-6 space-y-6">
         <div className="grid grid-cols-3 gap-2">
-          {outcomes.map(o => (
-            <button
+          {outcomes.map((o) => (
+            <GemButton
               key={o.id}
               onClick={() => setOutcome(o.id)}
-              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-                outcome === o.id 
-                  ? 'bg-indigo-500/20 border-indigo-500 text-white' 
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-              }`}
+              variant={outcome === o.id ? 'indigo' : 'ghost'}
+              className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg text-xs ${outcome === o.id ? '' : 'text-slate-400'}`}
+              ariaLabel={`Select outcome ${o.label}`}
             >
-              {o.icon}
-              <span className="text-xs font-medium">{o.label}</span>
-            </button>
+              <div className="mb-1">{o.icon}</div>
+              <div className="text-xs font-medium">{o.label}</div>
+            </GemButton>
           ))}
         </div>
 
@@ -555,19 +515,19 @@ const Dashboard = ({ onNewSession }) => {
       <div className="pt-8 border-t border-white/10">
         <h4 className="text-[10px] uppercase tracking-widest text-slate-600 mb-4">Data Agency (Local Only)</h4>
         <div className="flex gap-4">
-          <button onClick={exportData} className="flex items-center gap-2 text-xs text-slate-400 hover:text-indigo-400 transition-colors">
+          <GemButton onClick={exportData} variant="ghost" className="px-3 py-1 text-xs flex items-center gap-2" ariaLabel="Export JSON">
             <Download className="w-3 h-3" /> Export JSON
-          </button>
-          
+          </GemButton>
+
           {!showClearConfirm ? (
-            <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-2 text-xs text-slate-400 hover:text-rose-400 transition-colors">
+            <GemButton onClick={() => setShowClearConfirm(true)} variant="ghost" className="px-3 py-1 text-xs flex items-center gap-2 text-slate-400" ariaLabel="Clear history">
               <Trash2 className="w-3 h-3" /> Clear History
-            </button>
+            </GemButton>
           ) : (
             <div className="flex items-center gap-2">
               <span className="text-xs text-rose-400">Are you sure?</span>
-              <button onClick={clearData} className="text-xs font-bold text-rose-400 underline">Yes</button>
-              <button onClick={() => setShowClearConfirm(false)} className="text-xs text-slate-400 hover:text-white"><X className="w-3 h-3"/></button>
+              <GemButton onClick={clearData} variant="danger" className="px-3 py-1 text-xs" ariaLabel="Confirm clear history">Yes</GemButton>
+              <GemButton onClick={() => setShowClearConfirm(false)} variant="ghost" className="px-2 py-1 text-xs" ariaLabel="Cancel clear"><X className="w-3 h-3"/></GemButton>
             </div>
           )}
         </div>
@@ -621,9 +581,9 @@ export default function AnalyzerApp() {
         {/* Header (except on start) */}
         {view !== 'start' && (
           <header className="flex items-center justify-between py-4 mb-4 border-b border-white/10">
-               <button onClick={() => setView('dashboard')} className="text-slate-400 hover:text-white transition-colors">
+               <GemButton onClick={() => setView('dashboard')} variant="ghost" className="px-2 py-1 text-xs" ariaLabel="Open log">
                  <History className="w-5 h-5" />
-               </button>
+               </GemButton>
                <div className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Loki OS // Analyzer v1.0</div>
                <Link to="/" className="text-slate-400 hover:text-white transition-colors text-xs">Home</Link>
           </header>
