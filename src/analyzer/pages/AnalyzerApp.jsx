@@ -17,6 +17,8 @@ import {
 import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 import { loadSessions, saveSession as storageSaveSession, clearSessions } from '../utils/storage.js';
+import GemButton from '../../ui/components/GemButton'
+import GlassPane from '../../ui/components/GlassPane'
 
 const DecryptedText = ({ text, speed = 30, className = "" }) => {
   const [displayText, setDisplayText] = useState('');
@@ -55,48 +57,6 @@ const STEPS = [
 ];
 
 // --- COMPONENTS ---
-
-const GlassPane = ({ children, className = "", intensity = 1 }) => {
-  const intensities = {
-    0: "bg-white/5 border-white/10",
-    1: "bg-white/10 backdrop-blur-md border-white/10 shadow-[0_0_60px_rgba(99,102,241,0.08)]",
-    2: "bg-gradient-to-br from-white/10 via-white/5 to-white/0 backdrop-blur-xl border border-white/20 shadow-2xl ring-1 ring-indigo-500/10"
-  };
-  
-  return (
-    <div className={`rounded-xl border ${intensities[intensity]} ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false, ariaLabel }) => {
-  const variants = {
-    indigo: "from-indigo-500 to-blue-700 shadow-indigo-500/30 text-white",
-    amber: "from-amber-500 to-orange-600 shadow-amber-500/30 text-white",
-    ghost: "bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200",
-    danger: "from-red-500/70 to-rose-700 border border-red-500/40 text-red-100"
-  };
-
-  const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
-
-  return (
-    <button 
-      onClick={disabled ? null : onClick}
-      disabled={disabled}
-      aria-label={computedLabel}
-      className={`
-        group relative px-6 py-3 rounded-lg font-mono uppercase tracking-[0.2em] text-[11px] transition-all duration-200
-        bg-gradient-to-br shadow-lg flex items-center justify-center gap-2 overflow-hidden
-        ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-0.5 active:translate-y-0'}
-        ${variants[variant]} ${className}
-      `}
-    >
-      <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-white/10 transition-opacity duration-200" />
-      <span className="relative flex items-center justify-center gap-2">{children}</span>
-    </button>
-  );
-};
 
 const ProgressBar = ({ current, total }) => {
   const percent = Math.min(100, (current / total) * 100);
@@ -148,7 +108,7 @@ const StepRail = ({ current }) => {
 // --- SCREENS ---
 
 const StartScreen = ({ onStart }) => (
-  <div className="space-y-10 animate-in fade-in duration-700">
+  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-10">
     <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-8 items-center">
       <div className="space-y-6">
         <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-indigo-300 flex items-center gap-2">
@@ -162,7 +122,7 @@ const StartScreen = ({ onStart }) => (
           </p>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <GemButton onClick={onStart} variant="amber" className="px-10 py-3" ariaLabel="Begin diagnosis">
+          <GemButton onClick={onStart} variant="home" className="px-10 py-3" ariaLabel="Begin diagnosis">
             <Play className="w-4 h-4" /> Begin Diagnosis
           </GemButton>
           <div className="text-xs font-mono text-slate-500 uppercase tracking-[0.2em]">
@@ -206,7 +166,7 @@ const StartScreen = ({ onStart }) => (
 );
 
 const TaskAnchor = ({ data, onUpdate, onNext }) => (
-  <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+  <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }} className="space-y-6">
     <div className="space-y-2">
       <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">The Signal</div>
       <h2 className="text-2xl font-serif text-white">Where is the friction located?</h2>
@@ -273,11 +233,11 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
         Analyze Signal <ArrowRight className="w-4 h-4" />
       </GemButton>
     </div>
-  </div>
+  </motion.div>
 );
 
 const SymptomSelect = ({ onSelect }) => (
-  <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+  <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }} className="space-y-6">
     <div className="space-y-2">
       <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Symptom Scan</div>
       <h2 className="text-2xl font-serif text-white">Which statement feels most true?</h2>
@@ -305,7 +265,7 @@ const SymptomSelect = ({ onSelect }) => (
         </button>
       ))}
     </div>
-  </div>
+  </motion.div>
 );
 
 const Calibration = ({ trapId, onConfirm, onReject }) => {
@@ -316,7 +276,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
   const isConfirmed = yesCount >= 2;
 
   return (
-    <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+    <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }} className="space-y-6">
       <div className="space-y-2">
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Calibration</div>
         <h2 className="text-2xl font-serif text-white">Confirm the pattern</h2>

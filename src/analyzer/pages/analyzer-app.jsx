@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   Play, 
   Activity, 
@@ -22,47 +23,8 @@ import AnalyzerModel from '../operatingModel.js';
 import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
 
 // --- COMPONENTS ---
-
-const GlassPane = ({ children, className = "", intensity = 1 }) => {
-  const intensities = {
-    0: "bg-slate-900/40 border-white/10",
-    1: "bg-slate-800/60 backdrop-blur-xl border-white/10 shadow-2xl",
-    2: "bg-slate-800/90 backdrop-blur-2xl border-white/20 shadow-xl ring-1 ring-white/10"
-  };
-  
-  return (
-    <div className={`rounded-xl border ${intensities[intensity]} ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-const GemButton = ({ children, onClick, variant = 'indigo', className = "", disabled = false, ariaLabel }) => {
-  const variants = {
-    indigo: "from-indigo-600 to-blue-700 hover:brightness-110 shadow-indigo-500/20 text-white",
-    amber: "from-amber-500 to-orange-600 hover:brightness-110 shadow-amber-500/20 text-white",
-    ghost: "bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300",
-    danger: "from-red-900/50 to-red-800/50 border border-red-500/30 text-red-200 hover:bg-red-900/70"
-  };
-
-  const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
-
-  return (
-    <button 
-      onClick={disabled ? null : onClick}
-      disabled={disabled}
-      aria-label={computedLabel}
-      className={`
-        relative px-6 py-3 rounded-lg font-medium text-sm tracking-wide transition-all duration-200
-        bg-gradient-to-br shadow-lg flex items-center justify-center gap-2
-        ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-0.5 active:translate-y-0'}
-        ${variants[variant]} ${className}
-      `}
-    >
-      {children}
-    </button>
-  );
-};
+import GemButton from '../../ui/components/GemButton'
+import GlassPane from '../../ui/components/GlassPane'
 
 const ProgressBar = ({ current, total }) => {
   const percent = Math.min(100, (current / total) * 100);
@@ -79,7 +41,7 @@ const ProgressBar = ({ current, total }) => {
 // --- SCREENS ---
 
 const StartScreen = ({ onStart }) => (
-  <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8 animate-in fade-in duration-700">
+  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8">
     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-600/20 flex items-center justify-center border border-white/10 mb-4 animate-pulse">
       <Brain className="w-10 h-10 text-indigo-300" />
     </div>
@@ -89,10 +51,10 @@ const StartScreen = ({ onStart }) => (
         Identify the Trap. Apply the Lever.<br/>Restore Quality.
       </p>
     </div>
-    <GemButton onClick={onStart} variant="amber" className="w-48 text-base" ariaLabel="Begin diagnosis">
+    <GemButton onClick={onStart} variant="home" className="w-48 text-base" ariaLabel="Begin diagnosis">
       <Play className="w-4 h-4" /> Begin Diagnosis
     </GemButton>
-  </div>
+  </motion.div>
 );
 
 const TaskAnchor = ({ data, onUpdate, onNext }) => (
