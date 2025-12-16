@@ -176,7 +176,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
             <p className="text-slate-300 text-sm">{q}</p>
             <div className="flex gap-2 shrink-0">
               <GemButton
-                onClick={() => setAnswers({ ...answers, [idx]: true })}
+                onClick={() => setAnswers(prev => ({ ...prev, [idx]: true }))}
                 ariaLabel={`Answer yes to question ${idx + 1}`}
                 variant="ghost"
                 className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === true ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
@@ -184,7 +184,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
                 Y
               </GemButton>
               <GemButton
-                onClick={() => setAnswers({ ...answers, [idx]: false })}
+                onClick={() => setAnswers(prev => ({ ...prev, [idx]: false }))}
                 ariaLabel={`Answer no to question ${idx + 1}`}
                 variant="ghost"
                 className={`w-10 h-10 rounded-full text-xs px-0 py-0 ${answers[idx] === false ? 'bg-rose-500/20 border-rose-500 text-rose-400' : 'bg-white/5 border-white/10 text-slate-500'}`}
