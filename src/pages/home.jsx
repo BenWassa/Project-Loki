@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { MousePointer2, Activity, Zap, Layers, ChevronDown, Terminal } from 'lucide-react';
+import { colors, spacing, borders, shadows } from '../ui/design-system/tokens.js';
 
 /* -------------------------------------------------------------------------- */
 /* UTILITIES                                 */
@@ -67,7 +68,7 @@ const SpotlightCard = ({ children, className = "" }) => {
 };
 
 // --- 3. Magnetic Button ---
-const MagneticButton = ({ children, onClick, className }) => {
+const MagneticButton = ({ children, onClick, className, ...rest }) => {
   const ref = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -84,6 +85,7 @@ const MagneticButton = ({ children, onClick, className }) => {
   const { x, y } = position;
   return (
     <motion.button
+      {...rest}
       ref={ref}
       animate={{ x, y }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
@@ -152,7 +154,10 @@ const Home = () => {
       </nav>
 
       {/* --- Section 1: Hero --- */}
-      <section className="relative h-screen w-full flex flex-col justify-center items-center px-4 z-10">
+      <section
+        className="relative h-screen w-full flex flex-col justify-center items-center z-10"
+        style={{ paddingInline: spacing.md }}
+      >
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -160,32 +165,79 @@ const Home = () => {
           className="max-w-3xl w-full relative"
         >
           {/* Decorative Borders */}
-          <div className="absolute -top-8 -left-8 w-16 h-16 border-t border-l border-white/10" />
-          <div className="absolute -bottom-8 -right-8 w-16 h-16 border-b border-r border-white/10" />
+          <div
+            className="absolute border-t border-l"
+            style={{
+              top: `calc(-1 * ${spacing.xl})`,
+              left: `calc(-1 * ${spacing.xl})`,
+              width: `calc(${spacing.xl} * 2)`,
+              height: `calc(${spacing.xl} * 2)`,
+              borderColor: colors.neutral.border,
+            }}
+          />
+          <div
+            className="absolute border-b border-r"
+            style={{
+              bottom: `calc(-1 * ${spacing.xl})`,
+              right: `calc(-1 * ${spacing.xl})`,
+              width: `calc(${spacing.xl} * 2)`,
+              height: `calc(${spacing.xl} * 2)`,
+              borderColor: colors.neutral.border,
+            }}
+          />
 
-          <div className="mb-8">
-            <span className="text-[10px] font-mono text-indigo-400 tracking-widest uppercase block mb-2">
+          <div style={{ marginBottom: spacing.xl }}>
+            <span
+              className="text-[10px] font-mono tracking-widest uppercase block"
+              style={{ color: colors.primary.highlight, marginBottom: spacing.sm }}
+            >
               <DecryptedText text="// SYS.DIAGNOSTIC: ENTRY" />
             </span>
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-light leading-tight text-slate-100 mb-10 tracking-tight">
+          <h1
+            className="text-3xl md:text-5xl font-light leading-tight tracking-tight"
+            style={{ color: colors.neutral.inverse, marginBottom: `calc(${spacing.xl} + ${spacing.sm})` }}
+          >
             The fatigue you feel is not a personal flaw.
-            <span className="block mt-4 text-slate-400 text-xl md:text-2xl">
+            <span
+              className="block text-xl md:text-2xl"
+              style={{ marginTop: spacing.md, color: colors.neutral.textMuted }}
+            >
               It is the friction of a complex human system running in a world designed to fragment it.
             </span>
           </h1>
 
-          <div className="p-4 border-l-2 border-indigo-500/50 bg-white/5 backdrop-blur-sm mb-12">
-            <p className="font-mono text-sm text-indigo-200">
+          <div
+            className="backdrop-blur-sm"
+            style={{
+              padding: spacing.md,
+              borderLeftWidth: '2px',
+              borderLeftStyle: 'solid',
+              borderLeftColor: colors.primary.border,
+              backgroundColor: colors.glass.overlay,
+              marginBottom: spacing['2xl'],
+            }}
+          >
+            <p className="font-mono text-sm" style={{ color: colors.primary.highlight }}>
               Your operating model is misaligned.
             </p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex" style={{ gap: spacing.md }}>
             <MagneticButton 
               onClick={() => navigate('/analyzer')}
-              className="px-8 py-3 bg-white text-black font-mono text-xs uppercase tracking-widest hover:bg-indigo-50 transition-colors"
+              whileHover={{ backgroundColor: colors.primary.surfaceSoft, boxShadow: shadows.subtle }}
+              whileTap={{ scale: 0.98 }}
+              className="font-mono text-xs uppercase tracking-widest"
+              style={{
+                paddingInline: `calc(${spacing.xl} + ${spacing.sm})`,
+                paddingBlock: `calc(${spacing.md} - ${spacing.xs})`,
+                borderRadius: borders.radius.md,
+                border: `${borders.width.thin} solid ${colors.neutral.border}`,
+                backgroundColor: colors.neutral.inverse,
+                color: colors.neutral.background,
+              }}
             >
               [ Begin Diagnosis ]
             </MagneticButton>
@@ -195,7 +247,8 @@ const Home = () => {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-10 opacity-30"
+          className="absolute opacity-30"
+          style={{ bottom: `calc(${spacing.xl} + ${spacing.sm})` }}
         >
           <ChevronDown />
         </motion.div>
