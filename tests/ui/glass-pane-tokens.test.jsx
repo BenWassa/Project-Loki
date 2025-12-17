@@ -14,7 +14,11 @@ describe('GlassPane token composition', () => {
   it('applies intensity=2 classes', () => {
     const { container } = render(<GlassPane intensity={2}>Content</GlassPane>)
     const pane = container.firstChild
-    expect(pane.className).toContain(tw.glassPane.intensities[2])
+    expect(pane.className).toContain('bg-slate-800/90')
+    expect(pane.className).toContain('backdrop-blur-2xl')
+    expect(pane.className).toContain('border-white/20')
+    expect(pane.className).toContain('ring-1')
+    expect(pane.className).toContain('ring-white/10')
   })
 
   it('falls back to intensity=1 when intensity is invalid', () => {
@@ -23,4 +27,3 @@ describe('GlassPane token composition', () => {
     expect(pane.className).toContain(tw.glassPane.intensities[1])
   })
 })
-

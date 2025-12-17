@@ -1,10 +1,17 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { tw } from '../design-system/tokens.js'
+import { mergeClasses } from '../design-system/merge-classes.js'
 
 const GemButton = ({ children, onClick, variant = 'indigo', className = '', disabled = false, ariaLabel }) => {
   const computedLabel = ariaLabel || (typeof children === 'string' ? children : undefined)
   const variantClasses = tw.gemButton.variants[variant] || tw.gemButton.variants.indigo
+  const mergedClassName = mergeClasses(
+    tw.gemButton.base,
+    disabled ? tw.gemButton.disabled : tw.gemButton.enabled,
+    variantClasses,
+    className
+  )
 
   return (
     <motion.button
@@ -13,7 +20,7 @@ const GemButton = ({ children, onClick, variant = 'indigo', className = '', disa
       onClick={disabled ? null : onClick}
       disabled={disabled}
       aria-label={computedLabel}
-      className={`${tw.gemButton.base} ${disabled ? tw.gemButton.disabled : tw.gemButton.enabled} ${variantClasses} ${className}`}
+      className={mergedClassName}
     >
       {children}
     </motion.button>
