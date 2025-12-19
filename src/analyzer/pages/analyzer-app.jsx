@@ -124,32 +124,31 @@ const TaskAnchor = ({ data, onUpdate, onNext }) => (
 );
 
 const SymptomSelect = ({ onSelect }) => (
-  <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-    <div className="space-y-1">
-      <h2 className="text-xl font-medium text-slate-200">Symptom Scan</h2>
-      <p className="text-slate-400 text-sm">Which statement feels most true right now?</p>
+  <div className="space-y-5 animate-in slide-in-from-right-4 duration-500">
+    <div className="space-y-2">
+      <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-300">Symptom Scan</div>
+      <h2 className="text-2xl font-serif text-white">Which statement feels most true?</h2>
+      <p className="text-slate-400 text-sm">Choose the pattern that best mirrors the drag you're feeling.</p>
     </div>
 
     <div className="grid gap-3">
-          {Object.values(TRAPS).map((trap) => (
-            <GemButton
-              key={trap.id}
-              onClick={() => onSelect(trap.id)}
-              variant="ghost"
-              className="group text-left"
-              ariaLabel={`Select trap ${trap.name}`}
-            >
-              <GlassPane intensity={0} className="p-4 hover:bg-white/5 transition-all group-hover:border-white/20 group-hover:translate-x-1">
-            <div className="flex items-start gap-4">
-              <div className={`p-2 rounded-lg bg-gradient-to-br ${trap.color} bg-opacity-10 opacity-80 shrink-0`}>
-                {trap.icon}
-              </div>
-              <div>
-                <h3 className="text-slate-200 font-medium">{trap.name}</h3>
-                <p className="text-slate-400 text-sm mt-1 leading-snug">{trap.symptoms[0]}</p>
-              </div>
+      {Object.values(TRAPS).map((trap) => (
+        <GemButton
+          key={trap.id}
+          onClick={() => onSelect(trap.id)}
+          variant="ghost"
+          ariaLabel={`Select trap ${trap.name}`}
+          className="group text-left p-5 w-full h-auto !rounded-xl transition-all"
+        >
+          <div className="flex items-start gap-4">
+            <div className={`flex-shrink-0 text-white opacity-100 drop-shadow-[0_0_16px_rgba(99,102,241,0.5)]`}>
+              {trap.icon}
             </div>
-          </GlassPane>
+            <div className="min-w-0 flex-1 text-left">
+              <h3 className="text-white font-semibold text-base tracking-wide">{trap.name}</h3>
+              <p className="text-slate-300 text-sm mt-1.5 leading-relaxed">{trap.symptoms[0]}</p>
+            </div>
+          </div>
         </GemButton>
       ))}
     </div>
