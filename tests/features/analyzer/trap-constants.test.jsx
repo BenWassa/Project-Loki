@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
-import { TRAPS } from '../../src/analyzer/data/trap-constants.jsx';
+import { TRAPS } from '../../../src/features/analyzer/data/trap-constants.jsx';
 
 describe('TRAPS constants', () => {
   it('should export an object with traps', () => {

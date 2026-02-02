@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BOREDOM_BRANCHES } from '../../src/analyzer/logic/playbook-branching.js';
+import { BOREDOM_BRANCHES } from '../../../src/features/analyzer/logic/playbook-branching.js';
 
 describe('BOREDOM_BRANCHES', () => {
   it('has expected branches', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { loadSessions, saveSession, clearSessions, SESSIONS_KEY } from '../../src/analyzer/utils/storage.js';
+import { loadSessions, saveSession, clearSessions, SESSIONS_KEY } from '../../../src/features/analyzer/utils/storage.js';
 
 beforeEach(() => {
   localStorage.clear();

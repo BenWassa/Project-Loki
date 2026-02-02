@@ -29,7 +29,7 @@ The current Analyzer implements the following traps (as of this codebase):
 
 Each trap includes diagnostic questions, practical reframes, and a path forward.
 
-Note: There is an `experiments/analyzer_mvp` folder with older prototype material. The active implementation is under `src/analyzer`. To avoid drift, update `src/analyzer` and move experimental artifacts to an archive subfolder when you're ready to retire them.
+Note: There is an `experiments/analyzer_mvp` folder with older prototype material. The active implementation is under `src/features/analyzer`. To avoid drift, update `src/features/analyzer` and move experimental artifacts to an archive subfolder when you're ready to retire them.
 
 Repository housekeeping (recommended):
 

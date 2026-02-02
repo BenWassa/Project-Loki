@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import AnalyzerApp from './analyzer'
+import AnalyzerApp from './pages/Analyzer'
 import Home from './pages/home.jsx'
 import './index.css'
 

@@ -14,10 +14,8 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx';
-import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js';
-import { loadSessions, saveSession as storageSaveSession, clearSessions } from '../utils/storage.js';
-import { GemButton, GlassPane } from '../../components'
+import { TRAPS, CONTEXTS, BOREDOM_BRANCHES, loadSessions, saveSession as storageSaveSession, clearSessions } from '../features/analyzer';
+import { GemButton, GlassPane } from '../components'
 
 const STEPS = [
   { id: 'start', label: 'Initialize', caption: 'Boot sequence' },
