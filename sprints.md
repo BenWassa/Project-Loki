@@ -9,6 +9,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 **Goal**: Remove duplicate analyzer files and establish consistent import paths.
 
 **Tasks:**
+
 - [x] Delete `src/analyzer/pages/analyzer-app.jsx` (old 650-line file)
 - [x] Update `src/analyzer/components/index.js` to export from `AnalyzerApp.jsx` instead of `analyzer-app.jsx`
 - [x] Verify `src/analyzer/index.js` imports from correct file
@@ -16,6 +17,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 - [x] Update any documentation references to old file
 
 **Acceptance Criteria:**
+
 - [x] No duplicate analyzer page files exist
 - [x] All imports resolve correctly
 - [x] Tests pass
@@ -31,6 +33,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 **Goal**: Move shared UI components to a top-level components directory for better reusability.
 
 **Tasks:**
+
 - [x] Create `src/components/` directory
 - [x] Move `src/ui/components/GemButton.jsx` to `src/components/GemButton.jsx`
 - [x] Move `src/ui/components/GlassPane.jsx` to `src/components/GlassPane.jsx`
@@ -47,13 +50,14 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
   // To:
   import { GemButton, GlassPane } from '../../components'
   ```
-- [x] Update imports in `src/pages/home.jsx` (if any) - *No changes needed*
-- [x] Update test imports in `tests/analyzer/gembutton.test.jsx` - *No changes needed*
+- [x] Update imports in `src/pages/home.jsx` (if any) - _No changes needed_
+- [x] Update test imports in `tests/analyzer/gembutton.test.jsx` - _No changes needed_
 - [x] Remove empty `src/ui/components/` directory
-- [x] Update `src/ui/design-system/index.js` if needed - *No changes needed*
+- [x] Update `src/ui/design-system/index.js` if needed - _No changes needed_
 - [x] Update README.md documentation references
 
 **Acceptance Criteria:**
+
 - [x] Shared components are in `src/components/`
 - [x] All imports updated and working
 - [x] Tests pass
@@ -69,6 +73,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 **Goal**: Move analyzer-specific code into a features-based architecture for better organization and scalability.
 
 **Tasks:**
+
 - [x] Create `src/features/analyzer/` directory structure:
   ```
   src/features/analyzer/
@@ -101,9 +106,20 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
   // Change from:
   import { TRAPS, CONTEXTS } from '../data/trap-constants.jsx'
   import { BOREDOM_BRANCHES } from '../logic/playbook-branching.js'
-  import { loadSessions, saveSession as storageSaveSession, clearSessions } from '../utils/storage.js'
+  import {
+    loadSessions,
+    saveSession as storageSaveSession,
+    clearSessions
+  } from '../utils/storage.js'
   // To:
-  import { TRAPS, CONTEXTS, BOREDOM_BRANCHES, loadSessions, saveSession as storageSaveSession, clearSessions } from '../features/analyzer'
+  import {
+    TRAPS,
+    CONTEXTS,
+    BOREDOM_BRANCHES,
+    loadSessions,
+    saveSession as storageSaveSession,
+    clearSessions
+  } from '../features/analyzer'
   ```
 - [x] Update `src/main.jsx` import:
   ```jsx
@@ -122,6 +138,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 - [x] Update any documentation references
 
 **Acceptance Criteria:**
+
 - [x] Analyzer code is organized under `src/features/analyzer/`
 - [x] All imports updated and working
 - [x] Tests reorganized and passing
@@ -138,6 +155,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 **Goal**: Clean up experimental and legacy code that's no longer needed.
 
 **Tasks:**
+
 - [x] Move `experiments/analyzer_mvp/` to `experiments/archive/analyzer_mvp/`
 - [x] Update `experiments/archive/analyzer_mvp/README.md` with archival note
 - [x] Verify no active imports reference archived code
@@ -146,6 +164,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 - [x] Test production build
 
 **Acceptance Criteria:**
+
 - [x] Legacy code archived appropriately
 - [x] No active references to archived code
 - [x] All tests pass

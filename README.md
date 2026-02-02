@@ -24,8 +24,8 @@ The current Analyzer implements the following traps (as of this codebase):
 - **Boredom** - The task has lost its Quality signal and is under-challenging
 - **Intermittent Failure** - Ghosts in the machine; flickering or inconsistent failures
 - **Reassembly Failure** - Things are taken apart and the whole can't be put back together
- - **Impatience** - Pushing to finish before the system is ready
- - **Fog** - Unclear goals or lack of definition leading to poor direction
+- **Impatience** - Pushing to finish before the system is ready
+- **Fog** - Unclear goals or lack of definition leading to poor direction
 
 Each trap includes diagnostic questions, practical reframes, and a path forward.
 
@@ -45,6 +45,7 @@ For migration from local storage to a cloud backend (future work):
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js (v18+)
 - npm or yarn
 
@@ -111,7 +112,8 @@ src/
 ├── pages/              # Route pages (Home, Analyzer)
 └── main.jsx             # App entry point
 ```
-```
+
+````
 
 ## 🛠 Tech Stack
 
@@ -157,7 +159,7 @@ import { GemButton } from './src/components'
 
 <GemButton variant="home" onClick={() => navigate('/analyzer')}>Begin Diagnosis</GemButton>
 <GemButton variant="ghost" className="text-xs px-3 py-1">Export JSON</GemButton>
-```
+````
 
 - `GlassPane` — a reusable glassy container with intensity levels (0, 1, 2) to match the landing aesthetic (backdrop blur, border, subtle glow).
 
@@ -166,7 +168,9 @@ Example:
 ```jsx
 import { GlassPane } from './src/components'
 
-<GlassPane intensity={2} className="p-6">...content...</GlassPane>
+;<GlassPane intensity={2} className="p-6">
+  ...content...
+</GlassPane>
 ```
 
 These components keep visual language consistent while preserving the Home page's polish.

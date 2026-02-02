@@ -1,8 +1,8 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
-import AnalyzerApp from '../../src/pages/Analyzer.jsx';
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
+import AnalyzerApp from '../../src/pages/Analyzer.jsx'
 
 // Small smoke test: ensure the GemButton is accessible via aria labels in the main app
 
@@ -12,8 +12,8 @@ describe('Accessibility checks', () => {
       <MemoryRouter>
         <AnalyzerApp />
       </MemoryRouter>
-    );
-    const button = getByLabelText(/Begin diagnosis/i);
-    expect(button).toBeTruthy();
-  });
-});
+    )
+    const button = getByLabelText(/Begin diagnosis/i)
+    expect(button).toBeTruthy()
+  })
+})

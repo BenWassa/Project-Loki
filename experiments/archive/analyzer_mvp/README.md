@@ -24,4 +24,5 @@ This folder contains prototype materials and wireframes used during early produc
 - Contact maintainers if you need to reference historical decisions
 
 ---
-*Archived as part of Project Loki architecture refactoring (Sprint 4)*
+
+_Archived as part of Project Loki architecture refactoring (Sprint 4)_

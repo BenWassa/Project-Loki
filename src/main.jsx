@@ -13,5 +13,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/analyzer" element={<AnalyzerApp />} />
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

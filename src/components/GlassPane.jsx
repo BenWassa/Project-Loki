@@ -8,9 +8,7 @@ const GlassPane = ({ children, className = '', intensity = 1 }) => {
   }
 
   return (
-    <div className={`rounded-xl border ${intensities[intensity]} ${className}`}>
-      {children}
-    </div>
+    <div className={`rounded-xl border ${intensities[intensity]} ${className}`}>{children}</div>
   )
 }
 
