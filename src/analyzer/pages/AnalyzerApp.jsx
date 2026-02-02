@@ -20,30 +20,7 @@ import { loadSessions, saveSession as storageSaveSession, clearSessions } from '
 import GemButton from '../../ui/components/GemButton'
 import GlassPane from '../../ui/components/GlassPane'
 
-const DecryptedText = ({ text, speed = 30, className = "" }) => {
-  const [displayText, setDisplayText] = useState('');
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
-
-  useEffect(() => {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(
-              <GemButton
-                onClick={() => setAnswers(prev => ({...prev, [idx]: true}))}
-                ariaLabel={`Answer yes to question ${idx+1}`}
-                variant={answers[idx] === true ? 'indigo' : 'ghost'}
-                className="w-10 h-10 rounded-full p-0 text-xs"
-              >
-                Y
-              </GemButton>
-              <GemButton
-                onClick={() => setAnswers(prev => ({...prev, [idx]: false}))}
-                ariaLabel={`Answer no to question ${idx+1}`}
-                variant={answers[idx] === false ? 'danger' : 'ghost'}
-                className="w-10 h-10 rounded-full p-0 text-xs"
-              >
-                N
-              </GemButton>
+const STEPS = [
   { id: 'start', label: 'Initialize', caption: 'Boot sequence' },
   { id: 'anchor', label: 'Signal', caption: 'Locate the task' },
   { id: 'symptom', label: 'Symptom Scan', caption: 'Pattern detection' },
@@ -53,6 +30,31 @@ const DecryptedText = ({ text, speed = 30, className = "" }) => {
   { id: 'summary', label: 'Stabilize', caption: 'Anchor learning' },
   { id: 'dashboard', label: 'Log', caption: 'History + exports' },
 ];
+
+const DecryptedText = ({ text, speed = 30, className = "" }) => {
+  const [displayText, setDisplayText] = useState('');
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        text
+          .split("")
+          .map((letter, index) => {
+            if (index < iteration) return text[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+      if (iteration >= text.length) clearInterval(interval);
+      iteration += 1 / 3;
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return <span className={className}>{displayText}</span>;
+};
 
 // --- COMPONENTS ---
 
@@ -160,7 +162,7 @@ const StartScreen = ({ onStart }) => (
         </div>
       </GlassPane>
     </div>
-  </div>
+  </motion.div>
 );
 
 const TaskAnchor = ({ data, onUpdate, onNext }) => (
@@ -320,7 +322,7 @@ const Calibration = ({ trapId, onConfirm, onReject }) => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

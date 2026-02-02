@@ -1,4 +1,4 @@
-import AnalyzerApp from './pages/analyzer-app.jsx';
+import AnalyzerApp from './pages/AnalyzerApp.jsx';
 import AnalyzerModel from './operatingModel.js';
 
 export { AnalyzerModel };

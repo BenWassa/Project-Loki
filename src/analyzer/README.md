@@ -20,4 +20,4 @@ Functions:
 - `stabilize(trapId)` → returns a monitoring plan
 
 Integration:
-- `src/analyzer/pages/analyzer-app.jsx` uses the module to build a resilient flow and keep the UI a thin layer.
+- `src/analyzer/pages/AnalyzerApp.jsx` uses the module to build a resilient flow and keep the UI a thin layer.
