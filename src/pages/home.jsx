@@ -8,7 +8,7 @@ import {
   useMotionTemplate,
   useMotionValue
 } from 'framer-motion'
-import { MousePointer2, Activity, Zap, Layers, ChevronDown, Terminal } from 'lucide-react'
+import { MousePointer2, Activity, Zap, Layers, Terminal } from 'lucide-react'
 
 /* -------------------------------------------------------------------------- */
 /* UTILITIES                                 */
@@ -197,13 +197,6 @@ const Home = () => {
           </div>
         </motion.div>
 
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-10 opacity-30"
-        >
-          <ChevronDown />
-        </motion.div>
       </section>
 
       {/* --- Section 2: Noise & Signal (Spotlight Cards) --- */}

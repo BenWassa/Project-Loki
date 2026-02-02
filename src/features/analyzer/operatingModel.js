@@ -75,4 +75,5 @@ const defaultModel = {
   }
 }
 
+export const AnalyzerModel = defaultModel
 export default defaultModel

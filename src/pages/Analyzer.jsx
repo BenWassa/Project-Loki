@@ -181,9 +181,6 @@ const StartScreen = ({ onStart }) => (
               </div>
             ))}
           </div>
-          <div className="text-[10px] uppercase tracking-[0.25em] text-indigo-200/80 font-mono">
-            Designed to mirror the landing aesthetic—glass, glow, and motion.
-          </div>
         </div>
       </GlassPane>
     </div>
@@ -878,7 +875,7 @@ export default function AnalyzerApp() {
         />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-10 lg:py-14">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
         <header className="flex items-center justify-between mb-10">
           <Link
             to="/"
