@@ -196,7 +196,6 @@ const Home = () => {
             </MagneticButton>
           </div>
         </motion.div>
-
       </section>
 
       {/* --- Section 2: Noise & Signal (Spotlight Cards) --- */}

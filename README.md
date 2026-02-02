@@ -167,7 +167,6 @@ Example:
 
 ```jsx
 import { GlassPane } from './src/components'
-
 ;<GlassPane intensity={2} className="p-6">
   ...content...
 </GlassPane>
