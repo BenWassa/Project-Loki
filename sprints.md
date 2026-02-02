@@ -22,7 +22,6 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
 - [x] App builds and runs without errors
 
 **Estimated Time:** 30 minutes
-**Actual Time:** 20 minutes
 **Actual Time:** 45 minutes (included fixing corrupted code and test setup)
 
 ---
@@ -74,7 +73,7 @@ This document outlines the phased refactoring plan to clean up Project Loki's fi
   ```
   src/features/analyzer/
   ├── components/     # Future analyzer-specific components
-  ├── data/          # trap-constants.jsx, contexts.jsx
+  ├── data/          # trap-constants.jsx
   ├── logic/         # playbook-branching.js
   ├── utils/         # storage.js
   ├── operatingModel.js
@@ -175,8 +174,7 @@ src/
 │   └── analyzer/
 │       ├── components/
 │       ├── data/
-│       │   ├── trap-constants.jsx
-│       │   └── contexts.jsx
+│       │   └── trap-constants.jsx
 │       ├── logic/
 │       │   └── playbook-branching.js
 │       ├── utils/

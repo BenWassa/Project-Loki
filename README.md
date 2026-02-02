@@ -34,8 +34,8 @@ Note: Legacy prototype material has been archived to `experiments/archive/analyz
 Repository housekeeping (recommended):
 
 - Legacy prototype files have been archived to `experiments/archive/analyzer_mvp/` with documentation.
--- Keep the `src/analyzer` directory as the single source of truth for the Analyzer app. Avoid editing files under `experiments/` except for archival or migration tasks.
--- If you plan to add any previously‑planned traps (Laziness or other new traps), add them to `src/analyzer/data/trap-constants.jsx` and unit tests under `tests/analyzer` to validate behavior.
+- Keep the `src/features/analyzer` directory as the single source of truth for the Analyzer app. Avoid editing files under `experiments/` except for archival or migration tasks.
+- If you plan to add any previously‑planned traps (Laziness or other new traps), add them to `src/features/analyzer/data/trap-constants.jsx` and unit tests under `tests/features/analyzer` to validate behavior.
 
 For migration from local storage to a cloud backend (future work):
 
