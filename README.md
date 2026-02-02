@@ -29,11 +29,11 @@ The current Analyzer implements the following traps (as of this codebase):
 
 Each trap includes diagnostic questions, practical reframes, and a path forward.
 
-Note: There is an `experiments/analyzer_mvp` folder with older prototype material. The active implementation is under `src/features/analyzer`. To avoid drift, update `src/features/analyzer` and move experimental artifacts to an archive subfolder when you're ready to retire them.
+Note: Legacy prototype material has been archived to `experiments/archive/analyzer_mvp/`. The active implementation is under `src/features/analyzer`.
 
 Repository housekeeping (recommended):
 
-- Move any remaining prototype files from `experiments/analyzer_mvp` to `experiments/archive/` and add a short README that documents the prototype state and purpose.
+- Legacy prototype files have been archived to `experiments/archive/analyzer_mvp/` with documentation.
 -- Keep the `src/analyzer` directory as the single source of truth for the Analyzer app. Avoid editing files under `experiments/` except for archival or migration tasks.
 -- If you plan to add any previously‑planned traps (Laziness or other new traps), add them to `src/analyzer/data/trap-constants.jsx` and unit tests under `tests/analyzer` to validate behavior.
 
@@ -101,15 +101,16 @@ Continuous deployment:
 
 ```
 src/
-├── analyzer/
-│   ├── components/       # Reusable UI components
+├── features/analyzer/    # Feature-specific analyzer code
 │   ├── data/            # Trap definitions and constants
 │   ├── logic/           # Game branching and state logic
-│   └── pages/           # Main analyzer application
-├── ui/
-│   ├── components/      # Shared design system components
-│   └── design-system/   # Tailwind and styling utilities
+│   ├── utils/           # Storage and utility functions
+│   ├── operatingModel.js # Core analyzer logic
+│   └── index.js          # Feature exports
+├── components/          # Shared UI components (GemButton, GlassPane)
+├── pages/              # Route pages (Home, Analyzer)
 └── main.jsx             # App entry point
+```
 ```
 
 ## 🛠 Tech Stack
