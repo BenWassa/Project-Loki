@@ -145,14 +145,14 @@ Project Loki is open source. See repository for full details.
 
 ## 🎨 UI Components (Design System)
 
-We recently introduced a small shared component set in `src/ui/components` to keep the Analyzer and Home pages visually consistent and reusable across the app.
+We recently introduced a small shared component set in `src/components` to keep the Analyzer and Home pages visually consistent and reusable across the app.
 
 - `GemButton` — a variant-driven button component with subtle motion and multiple visual variants (recommended variants: `indigo`, `amber`, `ghost`, `danger`, `home`). Use `variant="ghost"` for small utility actions; use `variant="home"` for the primary landing CTA.
 
 Example:
 
 ```jsx
-import { GemButton } from './src/ui/components'
+import { GemButton } from './src/components'
 
 <GemButton variant="home" onClick={() => navigate('/analyzer')}>Begin Diagnosis</GemButton>
 <GemButton variant="ghost" className="text-xs px-3 py-1">Export JSON</GemButton>
@@ -163,7 +163,7 @@ import { GemButton } from './src/ui/components'
 Example:
 
 ```jsx
-import { GlassPane } from './src/ui/components'
+import { GlassPane } from './src/components'
 
 <GlassPane intensity={2} className="p-6">...content...</GlassPane>
 ```
